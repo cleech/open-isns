@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
+#include <limits.h>
 
 #include "isns.h"
 #include "util.h"

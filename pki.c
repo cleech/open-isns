@@ -7,6 +7,7 @@
 #include <sys/stat.h>
 #include <string.h>
 #include <unistd.h>
+#include <limits.h>
 #include <openssl/pem.h>
 #include <openssl/err.h>
 #include <fcntl.h>
