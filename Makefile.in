@@ -65,7 +65,7 @@ SLPLINK	= @SLPLIBS@
 SLPLIN	= @SLPLIBS@
 ADMOBJS = isnsadm.o
 SRVOBJS = isnsd.o
-ISNSDD	= isnsdd.o
+ISNSDD	= local.o isnsdd.o
 
 TESTS	= tests/pauw1 tests/pauw2 tests/pauw3 tests/pauw4
 
