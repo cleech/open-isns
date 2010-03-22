@@ -654,6 +654,7 @@ extern int		isns_portal_equal(const isns_portal_info_t *,
 				const isns_portal_info_t *);
 extern int		isns_enumerate_portals(isns_portal_info_t *,
 				unsigned int);
+extern int		isns_get_nr_portals(void);
 
 /* Local registry stuff */
 extern int		isns_local_registry_load(const char *, pid_t, isns_object_list_t *);
