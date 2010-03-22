@@ -1696,6 +1696,8 @@ again:
 				return msg;
 			default:
 				isns_message_release(msg);
+				isns_socket_release(sock);
+				return NULL;
 			}
 		}
 
