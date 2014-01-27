@@ -168,6 +168,8 @@ isns_enable_debugging(const char *what)
 			debugging |= (1 << DBG_SCN);
 		else if (!strcmp(s, "esi"))
 			debugging |= (1 << DBG_ESI);
+		else if (!strcmp(s, "all"))
+			debugging = (unsigned int)-1;
 		else {
 			isns_error("Ignoring unknown isns_debug facility <<%s>>\n",
 					s);
