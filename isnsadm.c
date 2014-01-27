@@ -43,6 +43,7 @@ static struct option	options[] = {
       {	"debug",		required_argument,	NULL,	'd'		},
       { "keyfile",		required_argument,	NULL,	'K',		},
       { "key",			required_argument,	NULL,	'k',		},
+      { "server",		required_argument,	NULL,	's',		},
       {	"local",		no_argument,		NULL,	'l'		},
       {	"control",		no_argument,		NULL,	'C'		},
       {	"replace",		no_argument,		NULL,	'r'		},
@@ -71,6 +72,7 @@ static int		opt_control = 0;
 static int		opt_replace = 0;
 static const char *	opt_keyfile = NULL;
 static char *		opt_key = NULL;
+static const char *	opt_servername = NULL;
 static struct sockaddr_storage opt_myaddr;
 
 static void	usage(int, const char *);
@@ -95,7 +97,7 @@ main(int argc, char **argv)
 	isns_security_t	*security = NULL;
 	int		c, status;
 
-	while ((c = getopt_long(argc, argv, "46Cc:d:hK:k:l", options, NULL)) != -1) {
+	while ((c = getopt_long(argc, argv, "46Cc:d:hK:k:ls:", options, NULL)) != -1) {
 		switch (c) {
 		case '4':
 			opt_af = AF_INET;
@@ -137,6 +139,9 @@ main(int argc, char **argv)
 			opt_replace = 1;
 			break;
 
+		case 's':
+			opt_servername = optarg;
+
 		case 'V':
 			printf("Open-iSNS version %s\n"
 			       "Copyright (C) 2007, Olaf Kirch <olaf.kirch@oracle.com>\n",
@@ -167,8 +172,11 @@ main(int argc, char **argv)
 
 	if (!isns_config.ic_source_name)
 		usage(1, "Please specify an iSNS source name");
-	if (!isns_config.ic_server_name)
+	if (!isns_config.ic_server_name && opt_servername)
+		isns_config.ic_server_name = strdup(opt_servername);
+	if (!isns_config.ic_server_name && !opt_local)
 		usage(1, "Please specify an iSNS server name");
+
 	if (!opt_action)
 		usage(1, "Please specify an operating mode");
 

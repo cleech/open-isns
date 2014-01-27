@@ -43,6 +43,9 @@ isns_create_client(isns_security_t *ctx, const char *source_name)
 	const char	*server_name;
 
 	server_name = isns_config.ic_server_name;
+	if (!server_name)
+		return NULL;
+
 	if (!strcasecmp(server_name, "SLP:")
 	 && !(server_name = isns_slp_find())) {
 		isns_error("Unable to locate iSNS server through SLP\n");
