@@ -556,6 +556,7 @@ struct isns_config {
 	char *		ic_source_name;
 	char *		ic_source_suffix;
 	char *		ic_entity_name;
+	char *		ic_iqn_prefix;
 
 	char *		ic_server_name;
 	char *		ic_bind_address;

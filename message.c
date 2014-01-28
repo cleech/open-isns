@@ -362,6 +362,9 @@ out:	isns_free(fqdn);
 int
 isns_init_names(void)
 {
+	if (isns_config.ic_iqn_prefix == NULL) {
+		isns_config.ic_iqn_prefix = DUMMY_IQN_PREFIX;
+	}
 	if (isns_config.ic_host_name == NULL) {
 		char	namebuf[1024], *fqdn;
 
@@ -391,7 +394,8 @@ isns_init_names(void)
 	}
 
 	if (isns_config.ic_source_name == NULL) {
-		isns_config.ic_source_name = __revert_fqdn(DUMMY_IQN_PREFIX,
+		isns_config.ic_source_name = __revert_fqdn(
+				isns_config.ic_iqn_prefix,
 				isns_config.ic_host_name,
 				isns_config.ic_source_suffix);
 		if (isns_config.ic_source_name == NULL) {

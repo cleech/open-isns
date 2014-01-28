@@ -62,7 +62,19 @@ When using DSA authentication, Open-iSNS currently requires the source
 name to match the key identifier (SPI) of the client's public
 key.
 .IP
-If left empty, the source name is derived from the client's hostname.
+If left empty, the source name is derived from either from
+the client's hostname using the
+.BR IQNPrefix
+option to generate an iSCSI qualified name.
+.TP
+.BR IQNPrefix
+Specifies the iSCSI qualified name prefix; must be of the form
+.BR iqn.YYYY-MM
+with
+.BR YYYY
+being the year and
+.BR MM
+the month.
 .TP
 .BR ServerAddress " (client):
 This options specifies the host name or address of

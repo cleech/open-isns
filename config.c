@@ -156,6 +156,10 @@ isns_config_set(const char *name, char *pos)
 		if (!value)
 			goto no_value;
 		isns_assign_string(&isns_config.ic_auth_name, value);
+	} else if (!strcasecmp(name, "IQNPrefix")) {
+		if (!value)
+			goto no_value;
+		isns_assign_string(&isns_config.ic_iqn_prefix, value);
 	} else if (!strcasecmp(name, "Database")) {
 		if (!value)
 			goto no_value;
