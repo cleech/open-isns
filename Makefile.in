@@ -96,6 +96,9 @@ distclean::
 	rm -f config.h Makefile config.status config.log
 	rm -rf autom4te.cache
 
+message.o: message.c
+	gcc $(CFLAGS) $(CPPFLAGS) $(IQNFLAGS) -c -o $@ message.c
+
 $(LIB): $(LIBOBJS)
 	ar cr $@ $(LIBOBJS)
 

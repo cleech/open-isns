@@ -27,7 +27,11 @@
  * we fake it by assigning a date before the
  * dawn of time.
  */
+#ifndef IQNPREFIX
 #define DUMMY_IQN_PREFIX	"iqn.1967-12."
+#else
+#define DUMMY_IQN_PREFIX IQNPREFIX
+#endif
 
 static uint32_t		isns_xid = 1;
 
