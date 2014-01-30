@@ -44,6 +44,7 @@ enum {
 static isns_socket_t *__isns_create_socket(struct addrinfo *src,
 			struct addrinfo *dst,
 			int sock_type);
+static isns_socket_t *__isns_create_socket_from_fd(int, int);
 static struct addrinfo *isns_get_address_list(const char *, const char *,
 			int, int, int);
 static void	release_addrinfo(struct addrinfo *);
@@ -537,6 +538,37 @@ isns_net_error(isns_socket_t *sock, int err_code)
 {
 	if (sock->is_error)
 		sock->is_error(sock, err_code);
+}
+
+/*
+ * Create a socket from systemd fd
+ */
+isns_socket_t *
+isns_create_systemd_socket(int idx)
+{
+	const char *env;
+	unsigned int p, fds;
+
+	env = getenv("LISTEN_PID");
+	if (!env)
+		return NULL;
+
+	if (sscanf(env, "%u", &p) != 1)
+		return NULL;
+	if ((pid_t)p != getpid())
+		return NULL;
+
+	env = getenv("LISTEN_FDS");
+	if (!env)
+		return NULL;
+
+	if (sscanf(env, "%u", &fds) != 1)
+		return NULL;
+
+	if (idx >= fds)
+		return NULL;
+
+	return __isns_create_socket_from_fd(idx + 3, SOCK_STREAM);
 }
 
 /*
@@ -1250,6 +1282,40 @@ failed:
 	return NULL;
 }
 
+isns_socket_t *
+__isns_create_socket_from_fd(int fd, int sock_type)
+{
+	isns_socket_t *sock;
+	struct sockaddr addr;
+	socklen_t alen;
+	struct addrinfo *src;
+
+	sock = isns_net_alloc(fd);
+	alen = sizeof(addr);
+	if (getsockname(fd, &addr, &alen) < 0) {
+		isns_debug_socket("getsockname on fd %d failed, %m\n", fd);
+		isns_socket_free(sock);
+		return NULL;
+	}
+
+	src = __make_addrinfo(&addr, alen, sock_type);
+	isns_sockaddr_init(&sock->is_dst, NULL);
+	isns_sockaddr_init(&sock->is_src, src);
+	if (sock_type == SOCK_DGRAM) {
+		sock->is_poll_in = isns_net_dgram_recv;
+		sock->is_poll_out = isns_net_dgram_xmit;
+		sock->is_state = ISNS_SOCK_IDLE;
+	} else {
+		sock->is_poll_in = isns_net_stream_accept;
+		sock->is_error = isns_net_stream_error;
+		sock->is_state = ISNS_SOCK_LISTENING;
+	}
+	sock->is_poll_mask = POLLIN;
+
+	isns_list_append(&all_sockets, &sock->is_list);
+	return sock;
+}
+
 /*
  * Connect to the master process
  */
@@ -1723,8 +1789,7 @@ again:
 		}
 
 		/* Check whether pending messages have timed out. */
-		while ((msg = isns_message_queue_head(&sock->is_pending)) !=
-		        NULL) {
+		while ((msg = isns_message_queue_head(&sock->is_pending))) {
 			if (__timeout_expired(&now, &msg->im_timeout)) {
 				isns_debug_socket("sock %p message %04x timed out\n",
 						sock, msg->im_xid);
@@ -1770,7 +1835,7 @@ again:
 			isns_message_release(msg);
 		}
 
-		/* 
+		/*
 		 * If the socket on which we're waiting right
 		 * now got disconnected, or had any other kind of
 		 * error, return right away to let the caller know.
@@ -1825,7 +1890,7 @@ kill_socket:
 		if (millisec == 0)
 			millisec += 1;
 
-		debug_verbose2("poll(%p, %u, %d)\n", pfd, count, millisec);
+		isns_debug_socket("poll(%p, %u, %d)\n", pfd, count, millisec);
 		r = poll(pfd, count, millisec);
 	} else {
 		r = poll(pfd, count, -1);

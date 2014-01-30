@@ -485,6 +485,7 @@ extern isns_socket_t *	isns_create_server_socket(const char *hostname, const cha
 				int af_hint, int sock_type);
 extern isns_socket_t *	isns_create_client_socket(const char *hostname, const char *portname,
 				int af_hint, int sock_type);
+extern isns_socket_t *  isns_create_systemd_socket(int index);
 extern isns_socket_t *	isns_create_bound_client_socket(const char *myaddr,
 				const char *hostname, const char *portname,
 				int af_hint, int sock_type);

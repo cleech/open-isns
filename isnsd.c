@@ -236,20 +236,31 @@ run_server(isns_server_t *server, isns_db_t *db)
 	if (status != ISNS_SUCCESS)
 		isns_fatal("Problem loading Discovery Domains from database\n");
 
+
+	/* First socket is the control socket */
+	sock = isns_create_systemd_socket(0);
+	if (sock) {
+		/* Second socket is the iSNS port */
+		sock = isns_create_systemd_socket(1);
+		isns_debug_socket("Using systemd fds\n");
+		goto set_security;
+	}
+
 	if (isns_config.ic_control_socket) {
 		sock = isns_create_server_socket(isns_config.ic_control_socket,
 				NULL, AF_UNSPEC, SOCK_STREAM);
 		if (sock == NULL)
 			isns_fatal("Unable to create control socket\n");
 		/*
-		isns_socket_set_security_ctx(sock, ctx);
-		   */
+		 * isns_socket_set_security_ctx(sock, ctx);
+		 */
 	}
 
 	sock = isns_create_server_socket(isns_config.ic_bind_address,
 			"isns", opt_af, SOCK_STREAM);
 	if (sock == NULL)
 		isns_fatal("Unable to create server socket\n");
+set_security:
 	isns_socket_set_security_ctx(sock, ctx);
 
 	if (isns_config.ic_slp_register) {

@@ -1,0 +1,15 @@
+[Unit]
+Description=iSNS daemon
+Before=iscsi.service iscsid.service
+After=syslog.target
+DefaultDependencies=no
+Conflicts=shutdown.target
+
+[Service]
+Type=simple
+ExecStart=/usr/sbin/isnsd -f -d all
+LimitCORE=infinity
+
+[Install]
+WantedBy=sysinit.target
+Also=isnsd.socket
