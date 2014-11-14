@@ -587,7 +587,7 @@ isns_attr_list_scanner_get_pg(struct isns_attr_list_scanner *st)
 		 && isns_object_get_string(base,
 					ISNS_TAG_ISCSI_NAME,
 					&st->pgt_iscsi_name)) {
-			st->pgt_next_attr = ISNS_TAG_PORTAL_IP_ADDRESS;
+			st->pgt_next_attr = ISNS_TAG_PG_PORTAL_IP_ADDR;
 		} else {
 			return ISNS_INTERNAL_ERROR;
 		}
@@ -619,7 +619,7 @@ isns_attr_list_scanner_get_pg(struct isns_attr_list_scanner *st)
 			return ISNS_INVALID_REGISTRATION;
 
 		next = st->orig_attrs.ial_data[st->pos++];
-		if (next->ia_tag_id != ISNS_TAG_PORTAL_TCP_UDP_PORT)
+		if (next->ia_tag_id != ISNS_TAG_PG_PORTAL_TCP_UDP_PORT)
 			return ISNS_INVALID_REGISTRATION;
 
 		isns_attr_list_append_string(&st->keys,
