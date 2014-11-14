@@ -7,6 +7,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <time.h>
+#include "config.h"
 #include "isns-proto.h"
 #include "vendor.h"
 #include "attrs.h"

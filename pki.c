@@ -11,10 +11,10 @@
 #include <openssl/pem.h>
 #include <openssl/err.h>
 #include <fcntl.h>
+#include "config.h"
 #include "isns.h"
 #include "security.h"
 #include "util.h"
-#include "config.h"
 
 #ifdef WITH_SECURITY
 

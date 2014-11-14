@@ -4,6 +4,7 @@
  * Copyright (C) 2007 Olaf Kirch <olaf.kirch@oracle.com>
  */
 
+#include "config.h"
 #include "isns.h"
 #include "util.h"
 #include "security.h"

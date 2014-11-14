@@ -16,12 +16,14 @@
 #include <signal.h>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <time.h>
 
 #ifdef MTRACE
 # include <mcheck.h>
 #endif
 
 #include <isns.h>
+#include "config.h"
 #include "security.h"
 #include "util.h"
 #include "isns-proto.h"

@@ -10,6 +10,7 @@
 #include <string.h>
 #include <signal.h>
 #include <unistd.h>
+#include <time.h>
 
 #ifdef MTRACE
 # include <mcheck.h>

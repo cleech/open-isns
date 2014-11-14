@@ -12,6 +12,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include "config.h"
 #include "isns.h"
 #include "attrs.h"
 #include "objects.h"

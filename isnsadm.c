@@ -11,6 +11,7 @@
 #include <unistd.h>
 #include <limits.h>
 
+#include "config.h"
 #include "isns.h"
 #include "util.h"
 #include "vendor.h"
@@ -18,7 +19,6 @@
 #include "security.h"
 #include "objects.h"
 #include "paths.h"
-#include "config.h"
 
 #define ISNS_DEFAULT_PORT_INITIATOR	860
 #define ISNS_DEFAULT_PORT_TARGET	3260

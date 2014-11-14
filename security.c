@@ -7,11 +7,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include "config.h"
 #include "isns.h"
 #include "security.h"
 #include "source.h"
 #include "util.h"
-#include "config.h"
 
 #ifdef WITH_SECURITY
 

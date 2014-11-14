@@ -14,6 +14,7 @@
 #include <unistd.h>
 #include <ctype.h>
 
+#include "config.h"
 #include "isns.h"
 #include "util.h"
 #include "vendor.h"

@@ -11,11 +11,11 @@
 #include <signal.h>
 #include <unistd.h>
 
-#include <isns.h>
+#include "config.h"
+#include "isns.h"
 #include "security.h"
 #include "util.h"
 #include "internal.h"
-#include "config.h"
 
 static isns_client_t *
 __isns_create_default_client(isns_socket_t *sock, isns_security_t *ctx,

@@ -19,12 +19,12 @@
 #include <netdb.h>
 #include <fcntl.h>
 
+#include "config.h"
 #include "buffer.h"
 #include "isns.h"
 #include "socket.h"
 #include "security.h"
 #include "util.h"
-#include "config.h"
 
 #define SOCK_DEBUG_VERBOSE	0
 
