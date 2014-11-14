@@ -324,7 +324,7 @@ parse_registration(char **argv, int argc, isns_object_list_t *objs, isns_object_
 		isns_attr_list_t attrlist = ISNS_ATTR_LIST_INIT;
 		struct isns_attr_list_parser state;
 		isns_object_t	*obj;
-		char		*type, *name, *value, *next_attr;
+		char		*name, *value, *next_attr;
 		char		*attrs[128];
 		unsigned int	nattrs = 0;
 
@@ -348,7 +348,6 @@ parse_registration(char **argv, int argc, isns_object_list_t *objs, isns_object_
 		if ((value = strchr(name, '=')) != NULL)
 			*value++ = '\0';
 
-		type = name;
 		if (!strcmp(name, "entity")) {
 			if (entity == NULL) {
 				isns_error("Cannot create entity object "
