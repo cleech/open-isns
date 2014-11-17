@@ -161,6 +161,7 @@ main(int argc, char **argv)
 	if (optind != argc)
 		usage(1, NULL);
 
+#if 0
 	/* If the config code derives the source name
 	 * automatically, we want it to be distinct from
 	 * any other source name (chosen by eg the iSCSI
@@ -168,11 +169,21 @@ main(int argc, char **argv)
 	 * somewhat lame attempt.
 	 */
 	isns_config.ic_source_suffix = "isns";
-
+#endif
 	isns_read_config(opt_configfile);
+
+	if (!isns_config.ic_source_name) {
+		/*
+		 * Try to read the source name from open-iscsi configuration
+		 */
+		isns_read_initiatorname(ISCSI_DEFAULT_INITIATORNAME);
+	}
+
+	isns_init_names();
 
 	if (!isns_config.ic_source_name)
 		usage(1, "Please specify an iSNS source name");
+
 	source = isns_source_create_iscsi(isns_config.ic_source_name);
 
 	isns_write_pidfile(isns_config.ic_pidfile);

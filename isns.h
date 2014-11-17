@@ -607,6 +607,7 @@ struct isns_config {
 };
 
 extern struct isns_config isns_config;
+extern int		isns_read_initiatorname(const char *);
 extern int		isns_read_config(const char *);
 extern int		isns_config_set(const char *, char *);
 

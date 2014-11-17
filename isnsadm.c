@@ -167,8 +167,17 @@ main(int argc, char **argv)
 			usage(1, "Unknown option");
 		}
 	}
-	
-	isns_read_config(opt_configfile);
+
+	if (opt_configfile)
+		isns_read_config(opt_configfile);
+	if (!isns_config.ic_source_name) {
+		/*
+		 * Try to read the source name from open-iscsi configuration
+		 */
+		isns_read_initiatorname(ISCSI_DEFAULT_INITIATORNAME);
+	}
+
+	isns_init_names();
 
 	if (!isns_config.ic_source_name)
 		usage(1, "Please specify an iSNS source name");

@@ -92,6 +92,37 @@ __isns_config_defaults(void)
 }
 
 /*
+ * read initiator name from supplied filename
+ */
+int
+isns_read_initiatorname(const char *filename)
+{
+	FILE	*fp;
+	char	*name, *pos;
+
+	if ((fp = fopen(filename, "r")) == NULL) {
+		perror(filename);
+		return -1;
+	}
+
+	while ((pos = parser_get_next_line(fp)) != NULL) {
+		pos[strcspn(pos, "#")] = '\0';
+
+		if (!(name = parser_get_next_word(&pos)))
+			continue;
+		if (strcmp(name, "InitiatorName"))
+			continue;
+		if (pos[0] == '=')
+			pos++;
+		if (!strncmp(pos, "iqn.", 4))
+			isns_assign_string(&isns_config.ic_source_name, pos);
+	}
+
+	fclose(fp);
+	return 0;
+}
+
+/*
  * Read the iSNS configuration file
  */
 int
@@ -129,8 +160,6 @@ isns_read_config(const char *filename)
 		else
 			isns_config.ic_security = 0;
 	}
-
-	isns_init_names();
 
 	return 0;
 }

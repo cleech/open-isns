@@ -19,4 +19,6 @@
 #define ISNS_DEFAULT_ISNSADM_CONFIG	ISNS_ETCDIR "/isnsadm.conf"
 #define ISNS_DEFAULT_LOCAL_REGISTRY	ISNS_RUNDIR "/isns.registry"
 
+#define ISCSI_DEFAULT_INITIATORNAME	"/etc/iscsi/initiatorname.iscsi"
+
 #endif /* ISNS_CONFIG_H */
