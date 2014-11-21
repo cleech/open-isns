@@ -4,13 +4,14 @@ sbindir	= @sbindir@
 mandir	= @mandir@
 etcdir	= /etc
 vardir	= /var/lib/isns
+systemddir = $(prefix)/lib/systemd/system
 datarootdir = @datarootdir@
 
 SBINDIR	= $(DESTDIR)$(sbindir)
-ETCDIR	= $(DESTDIR)$(etcdir)
-CFGDIR	= $(ETCDIR)/isns
+CFGDIR	= $(DESTDIR)$(etcdir)/isns
 MANDIR	= $(DESTDIR)$(mandir)
 VARDIR	= $(DESTDIR)$(vardir)
+SYSTEMDDIR = $(DESTDIR)$(systemddir)
 
 CC	= @CC@
 CPPFLAGS= @CPPFLAGS@
@@ -75,7 +76,7 @@ all: $(LIB) isnsd isnsadm isnsdd $(TESTS)
 
 install:
 	@echo "*** Installing Open-iSNS ***"
-	$(INSTALL) -m 755 -d $(CFGDIR) $(MANDIR)/man8 $(SBINDIR)
+	$(INSTALL) -m 755 -d $(CFGDIR) $(MANDIR)/man8 $(SBINDIR) $(SYSTEMDDIR)
 	$(INSTALL) -m 700 -d $(VARDIR)
 	$(INSTALL) -m 555 isnsd isnsadm isnsdd $(SBINDIR)
 	$(INSTALL) -m 644 etc/isnsd.conf $(CFGDIR)
@@ -84,7 +85,8 @@ install:
 	$(INSTALL) -m 644 doc/isnsd.8 $(MANDIR)/man8
 	$(INSTALL) -m 644 doc/isnsdd.8 $(MANDIR)/man8
 	$(INSTALL) -m 644 doc/isnsadm.8 $(MANDIR)/man8
-	$(INSTALL) -m 755 etc/openisns.init $(ETCDIR)/init.d/openisns
+	$(INSTALL) -m 644 isnsd.service $(SYSTEMDDIR)
+	$(INSTALL) -m 644 isnsd.socket $(SYSTEMDDIR)
 
 clean distclean::
 	rm -f *.o $(LIB) isnsd isnsadm isnsdd bitvector *~
