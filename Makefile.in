@@ -15,6 +15,7 @@ CC	= @CC@
 CPPFLAGS= @CPPFLAGS@
 CFLAGS	= @CFLAGS@ -I.
 LDFLAGS	= @LDFLAGS@
+INSTALL = @INSTALL@
 
 LIB	= libisns.a
 LIBOBJS	= server.o \
@@ -73,21 +74,16 @@ all: $(LIB) isnsd isnsadm isnsdd $(TESTS)
 
 install:
 	@echo "*** Installing Open-iSNS ***"
-	@install -v -m 755 -d $(CFGDIR) $(MANDIR) $(SBINDIR)
-	@install -v -m 700 -d $(VARDIR)
-	@install -v -m 555 isnsd isnsadm isnsdd $(SBINDIR)
-	@for f in etc/*.conf; do \
-		file=`basename $$f`; \
-		if [ ! -f $(CFGDIR)/$$file ]; then \
-			install -v -m 644 $$f $(CFGDIR)/$$file; \
-		fi; \
-	done
-	@for s in 5 8; do \
-		dstdir=$(MANDIR)/man$$s; \
-		install -v -m 755 -d $$dstdir; \
-		install -v -m 444 doc/*.$$s $$dstdir; \
-	done
-	@install -m 755 etc/openisns.init $(ETCDIR)/init.d/openisns
+	$(INSTALL) -m 755 -d $(CFGDIR) $(MANDIR)/man8 $(SBINDIR)
+	$(INSTALL) -m 700 -d $(VARDIR)
+	$(INSTALL) -m 555 isnsd isnsadm isnsdd $(SBINDIR)
+	$(INSTALL) -m 644 etc/isnsd.conf $(CFGDIR)
+	$(INSTALL) -m 644 etc/isnsdd.conf $(CFGDIR)
+	$(INSTALL) -m 644 etc/isnsadm.conf $(CFGDIR)
+	$(INSTALL) -m 644 doc/isnsd.8 $(MANDIR)/man8
+	$(INSTALL) -m 644 doc/isnsdd.8 $(MANDIR)/man8
+	$(INSTALL) -m 644 doc/isnsadm.8 $(MANDIR)/man8
+	$(INSTALL) -m 755 etc/openisns.init $(ETCDIR)/init.d/openisns
 
 clean distclean::
 	rm -f *.o $(LIB) isnsd isnsadm isnsdd bitvector *~
