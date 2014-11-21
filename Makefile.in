@@ -4,6 +4,7 @@ sbindir	= @sbindir@
 mandir	= @mandir@
 etcdir	= /etc
 vardir	= /var/lib/isns
+datarootdir = @datarootdir@
 
 SBINDIR	= $(INSTALL_ROOT)$(sbindir)
 ETCDIR	= $(INSTALL_ROOT)$(etcdir)
