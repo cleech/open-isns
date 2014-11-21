@@ -6,11 +6,11 @@ etcdir	= /etc
 vardir	= /var/lib/isns
 datarootdir = @datarootdir@
 
-SBINDIR	= $(INSTALL_ROOT)$(sbindir)
-ETCDIR	= $(INSTALL_ROOT)$(etcdir)
+SBINDIR	= $(DESTDIR)$(sbindir)
+ETCDIR	= $(DESTDIR)$(etcdir)
 CFGDIR	= $(ETCDIR)/isns
-MANDIR	= $(INSTALL_ROOT)$(mandir)
-VARDIR	= $(INSTALL_ROOT)$(vardir)
+MANDIR	= $(DESTDIR)$(mandir)
+VARDIR	= $(DESTDIR)$(vardir)
 
 CC	= @CC@
 CPPFLAGS= @CPPFLAGS@
