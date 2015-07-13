@@ -114,6 +114,7 @@ install_lib: $(LIB)
 
 clean distclean::
 	rm -f *.o $(LIB) isnsd isnsadm isnsdd bitvector *~
+	$(RM) $(TESTS)
 
 distclean::
 	rm -f config.h Makefile config.status config.log
