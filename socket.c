@@ -20,7 +20,7 @@
 #include <fcntl.h>
 
 #include "config.h"
-#include "buffer.h"
+#include <libisns/buffer.h>
 #include <libisns/isns.h>
 #include "socket.h"
 #include "security.h"

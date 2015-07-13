@@ -2,16 +2,20 @@ prefix	= @prefix@
 exec_prefix = @exec_prefix@
 sbindir	= @sbindir@
 mandir	= @mandir@
+libdir  = @libdir@
 etcdir	= /etc
 vardir	= /var/lib/isns
 systemddir = $(prefix)/lib/systemd/system
 datarootdir = @datarootdir@
+includedir = @includedir@
 
 SBINDIR	= $(DESTDIR)$(sbindir)
 CFGDIR	= $(DESTDIR)$(etcdir)/isns
 MANDIR	= $(DESTDIR)$(mandir)
 VARDIR	= $(DESTDIR)$(vardir)
 SYSTEMDDIR = $(DESTDIR)$(systemddir)
+LIBDIR = $(DESTDIR)$(libdir)
+INCDIR = $(DESTDIR)$(includedir)/libisns
 
 CC	= @CC@
 CPPFLAGS= @CPPFLAGS@
@@ -63,6 +67,16 @@ LIBOBJS	= server.o \
 	  util.o \
 	  bitvector.o \
 	  mdebug.o
+HDRS    = include/libisns/attrs.h \
+	  include/libisns/buffer.h \
+	  include/libisns/isns.h \
+	  include/libisns/isns-proto.h \
+	  include/libisns/message.h \
+	  include/libisns/paths.h \
+	  include/libisns/source.h \
+	  include/libisns/types.h \
+	  include/libisns/util.h
+
 SECLINK	= @SECLIBS@
 SLPLINK	= @SLPLIBS@
 SLPLIN	= @SLPLIBS@
@@ -87,6 +101,16 @@ install:
 	$(INSTALL) -m 644 doc/isnsadm.8 $(MANDIR)/man8
 	$(INSTALL) -m 644 isnsd.service $(SYSTEMDDIR)
 	$(INSTALL) -m 644 isnsd.socket $(SYSTEMDDIR)
+
+install_hdrs: 
+	@echo '*** Installing Open-iSNS header files ***'
+	$(INSTALL) -m 755 -d $(INCDIR)
+	$(INSTALL) -m 644 $(HDRS) $(INCDIR)
+
+install_lib: $(LIB)
+	@echo '*** Installing Open-iSNS developer files ***'
+	$(INSTALL) -m 755 -d $(LIBDIR)
+	$(INSTALL) -m 644 $(LIB) $(LIBDIR)
 
 clean distclean::
 	rm -f *.o $(LIB) isnsd isnsadm isnsdd bitvector *~

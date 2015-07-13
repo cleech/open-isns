@@ -8,7 +8,7 @@
 #define ISNS_SECURITY_H
 
 #include <openssl/evp.h>
-#include "buffer.h"
+#include <libisns/buffer.h>
 #include <libisns/util.h>
 
 /*

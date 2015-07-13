@@ -11,7 +11,7 @@
 #include <err.h>
 #include <unistd.h>
 #include <netinet/in.h> /* ntohl&htonl */
-#include "buffer.h"
+#include <libisns/buffer.h>
 #include <libisns/util.h>	/* htonll */
 
 static int	buf_drain(buf_t *bp);

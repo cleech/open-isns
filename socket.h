@@ -8,7 +8,7 @@
 #define ISNS_SOCKET_H
 
 #include <libisns/isns.h>
-#include "buffer.h"
+#include <libisns/buffer.h>
 #include <libisns/message.h>
 
 struct isns_partial_msg {

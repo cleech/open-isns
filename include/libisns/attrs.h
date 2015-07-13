@@ -8,7 +8,7 @@
 #define ISNS_ATTRS_H
 
 #include <netinet/in.h>
-#include "buffer.h"
+#include <libisns/buffer.h>
 #include <libisns/isns.h>
 
 /*
