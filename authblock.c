@@ -6,10 +6,10 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include "isns.h"
-#include "attrs.h"
-#include "message.h"
-#include "util.h"
+#include <libisns/isns.h>
+#include <libisns/attrs.h>
+#include <libisns/message.h>
+#include <libisns/util.h>
 
 /* We impose an artificial limit on the size of
  * the size of the authenticator

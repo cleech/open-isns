@@ -6,8 +6,8 @@
 
 #include <stdlib.h>
 #include <time.h>
-#include "isns.h"
-#include "util.h"
+#include <libisns/isns.h>
+#include <libisns/util.h>
 
 typedef struct isns_timer isns_timer_t;
 struct isns_timer {

@@ -8,9 +8,9 @@
 #include <unistd.h>
 #include <ctype.h>
 
-#include "isns.h"
-#include "util.h"
-#include "paths.h"
+#include <libisns/isns.h>
+#include <libisns/util.h>
+#include <libisns/paths.h>
 
 /*
  * iSNS configuration

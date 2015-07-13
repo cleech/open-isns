@@ -10,11 +10,11 @@
 #include "config.h"
 #include <openssl/pem.h>
 #include <openssl/err.h>
-#include "isns.h"
+#include <libisns/isns.h>
 #include "security.h"
 #include "objects.h"
 #include "vendor.h"
-#include "util.h"
+#include <libisns/util.h>
 
 /*
  * DB keystore

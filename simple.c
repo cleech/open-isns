@@ -8,13 +8,13 @@
 #include <stdlib.h>
 #include <string.h>
 #include "config.h"
-#include "isns.h"
-#include "attrs.h"
-#include "message.h"
+#include <libisns/isns.h>
+#include <libisns/attrs.h>
+#include <libisns/message.h>
 #include "objects.h"
 #include "security.h"
 #include "socket.h"
-#include "util.h"
+#include <libisns/util.h>
 
 typedef void isns_simple_callback_fn_t(uint32_t, int status, isns_simple_t *);
 

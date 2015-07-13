@@ -7,9 +7,9 @@
 #ifndef ISNS_MESSAGE_H
 #define ISNS_MESSAGE_H
 
-#include "attrs.h"
-#include "source.h"
-#include "util.h"
+#include <libisns/attrs.h>
+#include <libisns/source.h>
+#include <libisns/util.h>
 
 typedef struct isns_message_queue isns_message_queue_t;
 

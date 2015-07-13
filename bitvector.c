@@ -7,8 +7,8 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include "isns.h"
-#include "util.h"
+#include <libisns/isns.h>
+#include <libisns/util.h>
 
 struct isns_bitvector {
 	unsigned int	ib_count;

@@ -9,10 +9,10 @@
 #include <time.h>
 #include <stdarg.h>
 
-#include "isns.h"
+#include <libisns/isns.h>
 #include "objects.h"
 #include "db.h"
-#include "util.h"
+#include <libisns/util.h>
 
 enum {
 	IDT_INSERT,

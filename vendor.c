@@ -6,11 +6,11 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include "isns.h"
+#include <libisns/isns.h>
 #include "objects.h"
-#include "attrs.h"
+#include <libisns/attrs.h>
 #include "vendor.h"
-#include "util.h"
+#include <libisns/util.h>
 
 static uint32_t policy_attrs[] = {
 	OPENISNS_TAG_POLICY_SPI,

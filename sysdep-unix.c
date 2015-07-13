@@ -8,8 +8,8 @@
 #include <sys/ioctl.h>
 #include <string.h>
 #include <unistd.h>
-#include "isns.h"
-#include "util.h"
+#include <libisns/isns.h>
+#include <libisns/util.h>
 
 int isns_get_nr_portals(void)
 {

@@ -16,10 +16,10 @@
 # include <mcheck.h>
 #endif
 
-#include <isns.h>
+#include <libisns/isns.h>
 #include "security.h"
-#include "util.h"
-#include "paths.h"
+#include <libisns/util.h>
+#include <libisns/paths.h>
 #include "internal.h"
 
 enum {

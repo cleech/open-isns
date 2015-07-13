@@ -7,13 +7,13 @@
 #include <stdlib.h>
 #include <string.h>
 #include "config.h"
-#include "isns.h"
-#include "attrs.h"
-#include "message.h"
+#include <libisns/isns.h>
+#include <libisns/attrs.h>
+#include <libisns/message.h>
 #include "security.h"
 #include "objects.h"
 #include "db.h"
-#include "util.h"
+#include <libisns/util.h>
 
 /*
  * Create a GetNext query, and set the source name

@@ -5,10 +5,10 @@
  */
 
 #include "config.h"
-#include "isns.h"
-#include "util.h"
+#include <libisns/isns.h>
+#include <libisns/util.h>
 #include "security.h"
-#include "message.h"
+#include <libisns/message.h>
 
 static int	isns_not_supported(isns_server_t *, isns_simple_t *, isns_simple_t **);
 

@@ -7,12 +7,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include "config.h"
-#include "isns.h"
-#include "attrs.h"
+#include <libisns/isns.h>
+#include <libisns/attrs.h>
 #include "objects.h"
-#include "message.h"
+#include <libisns/message.h>
 #include "security.h"
-#include "util.h"
+#include <libisns/util.h>
 #include "db.h"
 
 extern isns_source_t *	isns_server_source;

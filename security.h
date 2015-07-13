@@ -9,7 +9,7 @@
 
 #include <openssl/evp.h>
 #include "buffer.h"
-#include "util.h"
+#include <libisns/util.h>
 
 /*
  * Security context

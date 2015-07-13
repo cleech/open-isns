@@ -9,7 +9,7 @@
 
 #include <netinet/in.h>
 #include "buffer.h"
-#include "isns.h"
+#include <libisns/isns.h>
 
 /*
  * Type identifier

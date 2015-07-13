@@ -7,9 +7,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#include "isns.h"
+#include <libisns/isns.h>
 #include "objects.h"
-#include "util.h"
+#include <libisns/util.h>
 
 /*
  * Create a network entity

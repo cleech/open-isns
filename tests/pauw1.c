@@ -3,10 +3,10 @@
  * registering itself.
  */
 #include <getopt.h>
-#include <isns.h>
-#include <paths.h>
-#include <util.h>
-#include <message.h>
+#include <libisns/isns.h>
+#include <libisns/paths.h>
+#include <libisns/util.h>
+#include <libisns/message.h>
 
 int
 main(int argc, char **argv)

@@ -14,8 +14,8 @@
 #include <netinet/in.h>
 #include <stdio.h>
 
-#include <isns-proto.h>
-#include "types.h"
+#include <libisns/isns-proto.h>
+#include <libisns/types.h>
 
 #define ISNS_MAX_BUFFER		8192
 #define ISNS_MAX_MESSAGE	8192

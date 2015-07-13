@@ -7,7 +7,7 @@
 #ifndef ISNS_SOURCE_H
 #define ISNS_SOURCE_H
 
-#include "attrs.h"
+#include <libisns/attrs.h>
 
 struct isns_source {
 	unsigned int		is_users;

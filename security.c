@@ -8,10 +8,10 @@
 #include <string.h>
 #include <time.h>
 #include "config.h"
-#include "isns.h"
+#include <libisns/isns.h>
 #include "security.h"
-#include "source.h"
-#include "util.h"
+#include <libisns/source.h>
+#include <libisns/util.h>
 
 #ifdef WITH_SECURITY
 

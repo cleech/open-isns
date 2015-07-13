@@ -13,10 +13,10 @@
 #include <errno.h>
 #include <limits.h>
 
-#include "isns.h"
+#include <libisns/isns.h>
 #include "objects.h"
-#include "message.h"
-#include "util.h"
+#include <libisns/message.h>
+#include <libisns/util.h>
 #include "db.h"
 
 #define DBE_FILE_VERSION	1

@@ -8,12 +8,12 @@
 #include <stdlib.h>
 #include <time.h>
 #include "config.h"
-#include "isns-proto.h"
+#include <libisns/isns-proto.h>
 #include "vendor.h"
-#include "attrs.h"
+#include <libisns/attrs.h>
 #include "security.h"
 #include "objects.h"
-#include "util.h"
+#include <libisns/util.h>
 
 #define ISNS_MAX_BUILTIN_TAG	4096
 

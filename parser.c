@@ -10,7 +10,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <err.h>
-#include "util.h"
+#include <libisns/util.h>
 
 /*
  * By default, the parser will recognize any white space

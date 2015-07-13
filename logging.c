@@ -10,7 +10,7 @@
 #include <string.h>
 #include <syslog.h>
 
-#include "util.h"
+#include <libisns/util.h>
 
 static unsigned int	log_stdout = 1;
 static unsigned int	debugging = 0;

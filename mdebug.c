@@ -8,7 +8,7 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include "util.h"
+#include <libisns/util.h>
 
 static void *		isns_malloc_default(size_t, const char *, unsigned int);
 static void *		isns_calloc_default(unsigned int, size_t,

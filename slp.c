@@ -10,8 +10,8 @@
 # include <slp.h>
 #endif
 
-#include "isns.h"
-#include "util.h"
+#include <libisns/isns.h>
+#include <libisns/util.h>
 #include "internal.h"
 
 #define ISNS_SLP_SERVICE_NAME	"iscsi:sms"

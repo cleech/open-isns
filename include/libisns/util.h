@@ -12,7 +12,7 @@
 #include <stdio.h>
 #include <stddef.h>
 #include <string.h>	// for strdup
-#include "types.h"
+#include <libisns/types.h>
 
 #define array_num_elements(a) (sizeof(a) / sizeof((a)[0]))
 

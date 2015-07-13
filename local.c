@@ -33,13 +33,13 @@
 #include <limits.h>
 
 #include "config.h"
-#include "isns.h"
+#include <libisns/isns.h>
 #include "security.h"
-#include "util.h"
-#include "isns-proto.h"
-#include "paths.h"
-#include "attrs.h"
-#include "util.h"
+#include <libisns/util.h>
+#include <libisns/isns-proto.h>
+#include <libisns/paths.h>
+#include <libisns/attrs.h>
+#include <libisns/util.h>
 
 typedef int __isns_local_registry_cb_fn_t(const char *line,
 			int argc, char **argv,

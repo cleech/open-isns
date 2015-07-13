@@ -7,9 +7,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#include "isns.h"
+#include <libisns/isns.h>
 #include "objects.h"
-#include "util.h"
+#include <libisns/util.h>
 
 static int
 __isns_default_dd_rebuild(isns_object_t *obj, isns_db_t *db)

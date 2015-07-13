@@ -7,7 +7,7 @@
 #ifndef ISNS_DB_H
 #define ISNS_DB_H
 
-#include "attrs.h"
+#include <libisns/attrs.h>
 
 typedef struct isns_db_backend	isns_db_backend_t;
 

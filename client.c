@@ -12,9 +12,9 @@
 #include <unistd.h>
 
 #include "config.h"
-#include "isns.h"
+#include <libisns/isns.h>
 #include "security.h"
-#include "util.h"
+#include <libisns/util.h>
 #include "internal.h"
 
 static isns_client_t *

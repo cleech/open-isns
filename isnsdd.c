@@ -22,13 +22,13 @@
 # include <mcheck.h>
 #endif
 
-#include <isns.h>
+#include <libisns/isns.h>
 #include "config.h"
 #include "security.h"
-#include "util.h"
-#include "isns-proto.h"
-#include "paths.h"
-#include "attrs.h"
+#include <libisns/util.h>
+#include <libisns/isns-proto.h>
+#include <libisns/paths.h>
+#include <libisns/attrs.h>
 
 enum {
 	ROLE_INITIATOR = 1,

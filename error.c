@@ -4,7 +4,7 @@
  * Copyright (C) 2007 Olaf Kirch <olaf.kirch@oracle.com>
  */
 
-#include "isns.h"
+#include <libisns/isns.h>
 
 const char *
 isns_strerror(enum isns_status status)

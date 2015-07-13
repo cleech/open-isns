@@ -12,13 +12,13 @@
 #include <limits.h>
 
 #include "config.h"
-#include "isns.h"
-#include "util.h"
+#include <libisns/isns.h>
+#include <libisns/util.h>
 #include "vendor.h"
-#include "attrs.h"
+#include <libisns/attrs.h>
 #include "security.h"
 #include "objects.h"
-#include "paths.h"
+#include <libisns/paths.h>
 
 #define ISNS_DEFAULT_PORT_INITIATOR	860
 #define ISNS_DEFAULT_PORT_TARGET	3260

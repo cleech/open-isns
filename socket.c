@@ -21,10 +21,10 @@
 
 #include "config.h"
 #include "buffer.h"
-#include "isns.h"
+#include <libisns/isns.h>
 #include "socket.h"
 #include "security.h"
-#include "util.h"
+#include <libisns/util.h>
 
 #define SOCK_DEBUG_VERBOSE	0
 

@@ -8,12 +8,12 @@
 #include <string.h>
 #include <time.h>
 #include "config.h"
-#include "isns.h"
-#include "attrs.h"
+#include <libisns/isns.h>
+#include <libisns/attrs.h>
 #include "objects.h"
-#include "message.h"
+#include <libisns/message.h>
 #include "security.h"
-#include "util.h"
+#include <libisns/util.h>
 #include "db.h"
 
 typedef struct isns_scn isns_scn_t;

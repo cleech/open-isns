@@ -7,10 +7,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <arpa/inet.h>
-#include "util.h"
+#include <libisns/util.h>
 #include "vendor.h"
-#include "attrs.h"
-#include "isns.h"
+#include <libisns/attrs.h>
+#include <libisns/isns.h>
 
 /* Implementation limit - sanity checking */
 #define ISNS_ATTR_MAX_LEN	8192

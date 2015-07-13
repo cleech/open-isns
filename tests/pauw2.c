@@ -3,10 +3,10 @@
  * registering itself.
  */
 #include <getopt.h>
-#include <isns.h>
-#include <paths.h>
-#include <util.h>
-#include <message.h>
+#include <libisns/isns.h>
+#include <libisns/paths.h>
+#include <libisns/util.h>
+#include <libisns/message.h>
 
 #define ADD(type, tag, value) \
 	isns_attr_list_append_##type(attrs, ISNS_TAG_##tag, value)

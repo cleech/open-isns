@@ -12,7 +12,7 @@
 #include <unistd.h>
 #include <netinet/in.h> /* ntohl&htonl */
 #include "buffer.h"
-#include "util.h"	/* htonll */
+#include <libisns/util.h>	/* htonll */
 
 static int	buf_drain(buf_t *bp);
 

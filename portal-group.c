@@ -6,11 +6,11 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include "isns.h"
+#include <libisns/isns.h>
 #include "objects.h"
 #include "vendor.h"
-#include "attrs.h"
-#include "util.h"
+#include <libisns/attrs.h>
+#include <libisns/util.h>
 
 /* For relationship stuff - should go */
 #include "db.h"

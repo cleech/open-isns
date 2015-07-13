@@ -11,7 +11,7 @@
 #include <string.h>
 #include <err.h>
 #include <errno.h>
-#include "util.h"
+#include <libisns/util.h>
 
 unsigned long
 parse_size(const char *arg)

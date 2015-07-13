@@ -7,9 +7,9 @@
 #ifndef ISNS_SOCKET_H
 #define ISNS_SOCKET_H
 
-#include "isns.h"
+#include <libisns/isns.h>
 #include "buffer.h"
-#include "message.h"
+#include <libisns/message.h>
 
 struct isns_partial_msg {
 	isns_message_t		imp_base;

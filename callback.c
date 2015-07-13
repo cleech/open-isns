@@ -6,11 +6,11 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include "isns.h"
+#include <libisns/isns.h>
 #include "objects.h"
 #include "vendor.h"
-#include "attrs.h"
-#include "util.h"
+#include <libisns/attrs.h>
+#include <libisns/util.h>
 
 typedef struct isns_object_notifier isns_object_notifier_t;
 struct isns_object_notifier {

@@ -7,7 +7,7 @@
 #ifndef ISNS_VENDOR_H
 #define ISNS_VENDOR_H
 
-#include "isns-proto.h"
+#include <libisns/isns-proto.h>
 
 /*
  * We're poor, we don't own a OUI. Let's fake one.

@@ -11,11 +11,11 @@
 #include <sys/time.h>	/* for timercmp */
 #include <unistd.h>	/* gethostname */
 #include <ctype.h>
-#include "isns.h"
-#include "attrs.h"
-#include "message.h"
+#include <libisns/isns.h>
+#include <libisns/attrs.h>
+#include <libisns/message.h>
 #include "socket.h"
-#include "util.h"
+#include <libisns/util.h>
 
 /* iSCSI qualified names include the year and
  * month in which the domain was assigned.

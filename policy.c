@@ -9,11 +9,11 @@
 
 #include <string.h>
 #include "config.h"
-#include "isns.h"
+#include <libisns/isns.h>
 #include "security.h"
 #include "objects.h"
-#include "message.h"
-#include "util.h"
+#include <libisns/message.h>
+#include <libisns/util.h>
 
 /*
    A brief discussion of policy

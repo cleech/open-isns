@@ -30,9 +30,9 @@
 #include <time.h>
 #include <stdarg.h>
 
-#include "isns.h"
+#include <libisns/isns.h>
 #include "objects.h"
-#include "util.h"
+#include <libisns/util.h>
 #include "db.h"
 
 struct isns_relation_soup {

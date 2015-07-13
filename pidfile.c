@@ -11,7 +11,7 @@
 #include <errno.h>
 #include <unistd.h>
 
-#include "util.h"
+#include <libisns/util.h>
 
 static void
 __update_pidfile(int fd)

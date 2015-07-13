@@ -7,8 +7,8 @@
 #ifndef ISNS_OBJECTS_H
 #define ISNS_OBJECTS_H
 
-#include "isns.h"
-#include "attrs.h"
+#include <libisns/isns.h>
+#include <libisns/attrs.h>
 
 enum isns_object_id {
 	ISNS_OBJECT_TYPE_ENTITY = 1,
