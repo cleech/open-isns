@@ -9,8 +9,8 @@
 #define ISNS_CONFIG_H
 
 #define __OPENISNS_MKVERSION(maj, min)	(((maj) << 8) + (min))
-#define OPENISNS_VERSION		__OPENISNS_MKVERSION(0, 93);
-#define OPENISNS_VERSION_STRING		"0.93"
+#define OPENISNS_VERSION		__OPENISNS_MKVERSION(0, 94);
+#define OPENISNS_VERSION_STRING		"0.94"
 
 #define ISNS_ETCDIR			"/etc/isns"
 #define ISNS_RUNDIR			"/var/run"
