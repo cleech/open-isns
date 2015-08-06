@@ -143,9 +143,13 @@ the EXAMPLES section of the isnsadm(8) manual page.
 Downloading Open-iSNS
 ---------------------
 
-Open-iSNS is available for download from
+Open-iSNS is available for download from:
 
-	http://oss.oracle.com/~okir/open-isns
+	https://github.com/gonzoleeman/open-isns/archive/0.93.tar.gz
+
+or, in souce form, from:
+
+	git@github.com:gonzoleeman/open-isns.git
 
 You have to grab the latest tarball and compile it; fancy things such
 as RPMs are not available yet.
@@ -171,3 +175,8 @@ as RPMs are not available yet.
 	License along with this library; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
+------------------------------------------------------------------
+
+Current maintainer:
+
+	Lee Duncan <lduncan@suse.com>		2015
