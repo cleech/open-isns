@@ -141,6 +141,7 @@ main(int argc, char **argv)
 
 		case 's':
 			opt_servername = optarg;
+			break;
 
 		case 'V':
 			printf("Open-iSNS version %s\n"
