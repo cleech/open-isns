@@ -2248,6 +2248,7 @@ isns_socket_get_local_addr(const isns_socket_t *sock,
 
 	if (sock->is_desc < 0)
 		return 0;
+	alen = sizeof(*addr);
 	if (getsockname(sock->is_desc,
 			(struct sockaddr *) addr, &alen) < 0) {
 		isns_error("getsockname: %m\n");
