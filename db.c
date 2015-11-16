@@ -468,8 +468,13 @@ __isns_db_insert(isns_db_t *db, isns_object_t *obj, unsigned int state)
 			obj->ie_state);
 
 	if (db->id_backend) {
+		/*
+		 * disable signals while writing the DB
+		 */
+		signals_hold();
 		db->id_backend->idb_store(db, obj);
 		db->id_backend->idb_sync(db);
+		signals_release();
 	}
 }
 
@@ -498,6 +503,7 @@ isns_db_sync(isns_db_t *db)
 	if (!db->id_backend)
 		return;
 
+	signals_hold();
 	for (i = 0; i < list->iol_count; ++i) {
 		isns_object_t	*obj = list->iol_data[i];
 
@@ -509,6 +515,7 @@ isns_db_sync(isns_db_t *db)
 	}
 	if (saved)
 		db->id_backend->idb_sync(db);
+	signals_release();
 }
 
 /*
@@ -647,6 +654,7 @@ isns_db_purge(isns_db_t *db)
 	isns_object_list_t *list = &db->id_deferred;
 	unsigned int	i;
 
+	signals_hold();
 	while (list->iol_count) {
 		isns_object_t *obj = list->iol_data[0];
 
@@ -705,6 +713,7 @@ isns_db_purge(isns_db_t *db)
 
 		i += 1;
 	}
+	signals_release();
 }
 
 /*

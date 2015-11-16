@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include <stddef.h>
 #include <string.h>	// for strdup
+#include <signal.h>
 #include <libisns/types.h>
 
 #define array_num_elements(a) (sizeof(a) / sizeof((a)[0]))
@@ -33,6 +34,21 @@ double		parse_double(const char *);
 unsigned int	parse_timeout(const char *);
 
 char *		print_size(unsigned long);
+
+/*
+ * for signal management
+ */
+static inline void signals_hold(void)
+{
+	sighold(SIGTERM);
+	sighold(SIGINT);
+}
+
+static inline void signals_release(void)
+{
+	sigrelse(SIGTERM);
+	sigrelse(SIGINT);
+}
 
 /*
  * Very simple and stupid string array.

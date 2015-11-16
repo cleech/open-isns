@@ -415,18 +415,22 @@ __dbe_file_load_info(isns_db_t *db)
 	struct isns_db_file_info info;
 	const char	*path;
 	buf_t		*bp = NULL;
-	int		status;
+	int		status = ISNS_NO_SUCH_ENTRY;
 
 	path = __path_concat(back->idb_name, "DB");
-	if ((bp = buf_open(path, O_RDONLY)) == NULL) {
-		status = ISNS_NO_SUCH_ENTRY;
+	if ((bp = buf_open(path, O_RDONLY)) == NULL)
+		goto out;
+
+	/*
+	 * if the frist read fails that means the file is
+	 * likely truncated, so handle that
+	 */
+	if (!buf_get32(bp, &info.db_version)) {
+		isns_warning("DB file truncated? Ignoring it\n");
 		goto out;
 	}
 
 	status = ISNS_INTERNAL_ERROR;
-	if (!buf_get32(bp, &info.db_version))
-		goto out;
-
 	if (info.db_version != DBE_FILE_VERSION) {
 		isns_error("DB file from unsupported version %04x\n",
 				info.db_version);
