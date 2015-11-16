@@ -176,7 +176,7 @@ void
 cleanup(int sig)
 {
 	isns_remove_pidfile(isns_config.ic_pidfile);
-	exit(1);
+	exit(sig == SIGTERM ? 0 : 1);
 }
 
 static void
