@@ -7,7 +7,7 @@ Conflicts=shutdown.target
 
 [Service]
 Type=simple
-ExecStart=/usr/sbin/isnsd -f -d all
+ExecStart=/usr/sbin/isnsd -f
 LimitCORE=infinity
 
 [Install]
