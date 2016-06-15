@@ -115,4 +115,41 @@ AC_ARG_ENABLE(memdebug,
 )
 AC_SUBST(OPTIMIZE)
 
+ENABLE_SHARED=0
+AC_ARG_ENABLE(shared,
+	[  --enable-shared         Build shared library],
+	[
+		if test "x$enableval" = "xyes" ; then
+			ENABLE_SHARED=1
+		fi
+	]
+)
+ENABLE_STATIC=1
+AC_ARG_ENABLE(static,
+	[  --disable-static        Build static library],
+	[
+		if test "x$enableval" = "xno" ; then
+			ENABLE_STATIC=0
+		fi
+	]
+)
+
+if test "x$ENABLE_SHARED" = "x1" ; then
+	# Taken and modified from libpng's configure.ac
+	AC_MSG_CHECKING([if libraries can be versioned])
+	GLD=`$CC -Wl,--help < /dev/null 2>/dev/null | grep version-script`
+	if test "$GLD"; then
+	HAVE_LD_VERSION_SCRIPT=1
+	AC_MSG_RESULT(yes)
+	else
+	HAVE_LD_VERSION_SCRIPT=0
+	AC_MSG_RESULT(no)
+	AC_MSG_WARN(*** You have not enabled versioned symbols.)
+	fi
+	AC_SUBST(HAVE_LD_VERSION_SCRIPT)
+fi
+
+AC_SUBST(ENABLE_SHARED)
+AC_SUBST(ENABLE_STATIC)
+
 AC_OUTPUT(Makefile)

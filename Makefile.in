@@ -17,6 +17,20 @@ SYSTEMDDIR = $(DESTDIR)$(systemddir)
 LIBDIR = $(DESTDIR)$(libdir)
 INCDIR = $(DESTDIR)$(includedir)/libisns
 
+ENABLE_SHARED = @ENABLE_SHARED@
+ENABLE_STATIC = @ENABLE_STATIC@
+HAVE_LD_VERSION_SCRIPT = @HAVE_LD_VERSION_SCRIPT@
+ifneq ($(ENABLE_SHARED),1)
+BUILD_STATIC  = 1
+else
+BUILD_STATIC  = $(ENABLE_STATIC)
+endif
+ifeq ($(HAVE_LD_VERSION_SCRIPT),1)
+SOLIB_VERSION_OPTS = -Wl,--version-script=libisns.vers
+else
+SOLIB_VERSION_OPTS =
+endif
+
 CC	= @CC@
 CPPFLAGS= @CPPFLAGS@
 CFLAGS	= @CFLAGS@ -I. -Iinclude
@@ -24,6 +38,8 @@ LDFLAGS	= @LDFLAGS@
 INSTALL = @INSTALL@
 
 LIB	= libisns.a
+SOLIB   = libisns.so.0
+SOLIB_SONAME = libisns.so.0
 LIBOBJS	= server.o \
 	  client.o \
 	  objects.o \
@@ -67,6 +83,7 @@ LIBOBJS	= server.o \
 	  util.o \
 	  bitvector.o \
 	  mdebug.o
+SOLIBOBJS = $(patsubst %.o,solib-%.o,$(LIBOBJS))
 HDRS    = include/libisns/attrs.h \
 	  include/libisns/buffer.h \
 	  include/libisns/isns.h \
@@ -86,7 +103,7 @@ ISNSDD	= local.o isnsdd.o
 
 TESTS	= tests/pauw1 tests/pauw2 tests/pauw3 tests/pauw4
 
-all: $(LIB) isnsd isnsadm isnsdd $(TESTS)
+all: $(LIB) $(SOLIB) isnsd isnsadm isnsdd $(TESTS)
 
 install:
 	@echo "*** Installing Open-iSNS ***"
@@ -111,35 +128,59 @@ install_hdrs:
 install_lib: $(LIB)
 	@echo '*** Installing Open-iSNS developer files ***'
 	$(INSTALL) -m 755 -d $(LIBDIR)
+ifeq ($(ENABLE_SHARED),1)
+	$(INSTALL) -m 644 $(SOLIB) $(LIBDIR)
+	ln -sf $(SOLIB) $(LIBDIR)/libisns.so
+endif
+ifeq ($(ENABLE_STATIC),1)
 	$(INSTALL) -m 644 $(LIB) $(LIBDIR)
+endif
 
 clean distclean::
-	rm -f *.o $(LIB) isnsd isnsadm isnsdd bitvector *~
+	rm -f *.o $(LIB) $(SOLIB) libisns.so isnsd isnsadm isnsdd bitvector *~
 	$(RM) $(TESTS)
 
 distclean::
 	rm -f config.h Makefile config.status config.log
 	rm -rf autom4te.cache
 
+$(filter-out solib-message.o, $(SOLIBOBJS)): $(patsubst solib-%.o,%.c,$@)
+	$(CC) $(CFLAGS) $(CPPFLAGS) -fPIC -c -o $@ $(patsubst solib-%.o,%.c,$@)
+
 message.o: message.c
 	$(CC) $(CFLAGS) $(CPPFLAGS) $(IQNFLAGS) -c -o $@ message.c
 
+solib-message.o: message.c
+	$(CC) $(CFLAGS) $(CPPFLAGS) $(IQNFLAGS) -fPIC -c -o $@ message.c
+
+ifeq ($(BUILD_STATIC),1)
 $(LIB): $(LIBOBJS)
 	ar cr $@ $(LIBOBJS)
+else
+$(LIB):
+endif
 
-isnsd: $(SRVOBJS) $(LIB)
-	$(CC) $(CFLAGS) -o $@ $(SRVOBJS) -L. -lisns $(SECLINK) $(SLPLINK)
+ifeq ($(ENABLE_SHARED),1)
+$(SOLIB): $(SOLIBOBJS)
+	$(CC) $(CFLAGS) $(LDFLAGS) -fPIC -shared -Wl,-soname,$(SOLIB_SONAME) $(SOLIB_VERSION_OPTS) -o $@ $(SOLIBOBJS) -Wl,--as-needed $(SECLINK) $(SLPLINK)
+	[ -L libisns.so ] || ln -s $(SOLIB) libisns.so
+else
+$(SOLIB):
+endif
 
-isnsdd: $(ISNSDD) $(LIB)
-	$(CC) $(CFLAGS) -o $@ $(ISNSDD) -L. -lisns $(SECLINK) $(SLPLINK)
+isnsd: $(SRVOBJS) $(LIB) $(SOLIB)
+	$(CC) $(CFLAGS) -o $@ $(SRVOBJS) -L. -lisns -Wl,--as-needed $(SECLINK) $(SLPLINK)
 
-isnsadm: $(ADMOBJS) $(LIB)
-	$(CC) $(CFLAGS) -o $@ $(ADMOBJS) -L. -lisns $(SECLINK) $(SLPLINK)
+isnsdd: $(ISNSDD) $(LIB) $(SOLIB)
+	$(CC) $(CFLAGS) -o $@ $(ISNSDD) -L. -lisns -Wl,--as-needed $(SECLINK) $(SLPLINK)
 
-tests/%: tests/%.o $(LIB)
-	$(CC) $(CFLAGS) -o $@ $@.o -L. -lisns $(SECLINK) $(SLPLINK)
+isnsadm: $(ADMOBJS) $(LIB) $(SOLIB)
+	$(CC) $(CFLAGS) -o $@ $(ADMOBJS) -L. -lisns -Wl,--as-needed $(SECLINK) $(SLPLINK)
 
-bitvector: bitvector.c $(LIB)
+tests/%: tests/%.o $(LIB) $(SOLIB)
+	$(CC) $(CFLAGS) -o $@ $@.o -L. -lisns -Wl,--as-needed $(SECLINK) $(SLPLINK)
+
+bitvector: bitvector.c $(LIB) $(SOLIB)
 	$(CC) -DTEST $(CFLAGS) -o $@ bitvector.c -L. -lisns
 
 depend:
