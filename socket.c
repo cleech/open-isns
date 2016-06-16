@@ -2160,8 +2160,14 @@ isns_get_address_list(const char *addrspec, const char *port,
 	if (af_hint == AF_INET6)
 		hints.ai_flags |= AI_V4MAPPED;
 
+repeat_gai:
 	rv = getaddrinfo(host, port, &hints, &found);
 	if (rv) {
+		/* isns port may not be in /etc/services */
+		if (strcmp(port, "isns") == 0) {
+			port = "3205";
+			goto repeat_gai;
+		}
 		isns_error("Cannot resolve address \"%s\": %s\n",
 			addrspec, gai_strerror(rv));
 		goto out;
