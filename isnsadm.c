@@ -710,7 +710,7 @@ parse_list(int argc, char **argv, isns_object_template_t **type_p, isns_attr_lis
 		printf("Object query:\n"
 		       " isnsadm --list type attr=value attr=value ...\n"
 		       "Possible value for <type>:\n"
-		       " entities           - list all network entites\n"
+		       " entities           - list all network entities\n"
 		       " nodes              - list all storage nodes\n"
 		       " portals            - list all portals\n"
 		       " portal-groups      - list all portal groups\n"
