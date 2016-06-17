@@ -621,6 +621,7 @@ ac_includes_default="\
 
 ac_subst_vars='LTLIBOBJS
 LIBOBJS
+RUNDIR
 ENABLE_STATIC
 ENABLE_SHARED
 HAVE_LD_VERSION_SCRIPT
@@ -695,6 +696,7 @@ ac_user_opts='
 enable_option_checking
 with_security
 with_slp
+with_rundir
 enable_memdebug
 enable_shared
 enable_static
@@ -1330,6 +1332,7 @@ Optional Packages:
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
   --with-security         Enable iSNS authentication - requires OpenSSL
   --with-slp              Enable SLP for server discovery - requires OpenSLP
+  --with-rundir=/var/run  The runtime directory for PID files etc.
 
 Some influential environment variables:
   CC          C compiler command
@@ -4399,6 +4402,21 @@ $as_echo "#define WITH_SLP 1" >>confdefs.h
 fi
 
 
+RUNDIR=/var/run
+
+# Check whether --with-rundir was given.
+if test "${with_rundir+set}" = set; then :
+  withval=$with_rundir;
+		if test "x$withval" = "xno" -o "x$withval" = "xyes"; then
+			as_fn_error $? "No rundir value specified." "$LINENO" 5
+		else
+			RUNDIR="${withval}"
+		fi
+
+
+fi
+
+
 MEMDEBUG=
 # Check whether --enable-memdebug was given.
 if test "${enable_memdebug+set}" = set; then :
@@ -4457,7 +4475,8 @@ fi
 
 
 
-ac_config_files="$ac_config_files Makefile"
+
+ac_config_files="$ac_config_files Makefile include/libisns/paths.h"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -5152,6 +5171,7 @@ do
   case $ac_config_target in
     "config.h") CONFIG_HEADERS="$CONFIG_HEADERS config.h" ;;
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
+    "include/libisns/paths.h") CONFIG_FILES="$CONFIG_FILES include/libisns/paths.h" ;;
 
   *) as_fn_error $? "invalid argument: \`$ac_config_target'" "$LINENO" 5;;
   esac
