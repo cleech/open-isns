@@ -104,6 +104,18 @@ if test "x$WITH_SLP" != "xno" ; then
 fi
 AC_SUBST(SLPLIBS)
 
+RUNDIR=/var/run
+AC_ARG_WITH(rundir,
+	[  --with-rundir=/var/run  The runtime directory for PID files etc.],
+	[
+		if test "x$withval" = "xno" -o "x$withval" = "xyes"; then
+			AC_MSG_ERROR([No rundir value specified.])
+		else
+			RUNDIR="${withval}"
+		fi
+	]
+)
+
 MEMDEBUG=
 AC_ARG_ENABLE(memdebug,
 	[  --enable-memdebug       Enable malloc debugging],
@@ -151,5 +163,6 @@ fi
 
 AC_SUBST(ENABLE_SHARED)
 AC_SUBST(ENABLE_STATIC)
+AC_SUBST(RUNDIR)
 
-AC_OUTPUT(Makefile)
+AC_OUTPUT(Makefile include/libisns/paths.h)

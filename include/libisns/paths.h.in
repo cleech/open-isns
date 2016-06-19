@@ -13,7 +13,7 @@
 #define OPENISNS_VERSION_STRING		"0.95"
 
 #define ISNS_ETCDIR			"/etc/isns"
-#define ISNS_RUNDIR			"/var/run"
+#define ISNS_RUNDIR			"@RUNDIR@"
 #define ISNS_DEFAULT_ISNSD_CONFIG	ISNS_ETCDIR "/isnsd.conf"
 #define ISNS_DEFAULT_ISNSDD_CONFIG	ISNS_ETCDIR "/isnsdd.conf"
 #define ISNS_DEFAULT_ISNSADM_CONFIG	ISNS_ETCDIR "/isnsadm.conf"

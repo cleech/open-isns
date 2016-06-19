@@ -141,7 +141,7 @@ clean distclean::
 	$(RM) $(TESTS)
 
 distclean::
-	rm -f config.h Makefile config.status config.log
+	rm -f config.h Makefile config.status config.log include/libisns/paths.h
 	rm -rf autom4te.cache
 
 $(filter-out solib-message.o, $(SOLIBOBJS)): $(patsubst solib-%.o,%.c,$@)
