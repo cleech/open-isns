@@ -170,6 +170,7 @@ main(int argc, char **argv)
 	 */
 	isns_config.ic_source_suffix = "isns";
 #endif
+	isns_config.ic_pidfile = ISNS_RUNDIR "/isnsdd.pid";
 	isns_read_config(opt_configfile);
 
 	if (!isns_config.ic_source_name) {

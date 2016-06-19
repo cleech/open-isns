@@ -2111,7 +2111,7 @@ isns_get_address_list(const char *addrspec, const char *port,
 {
 	struct addrinfo hints, *found = NULL, *res = NULL;
 	char	*copy = NULL, *host = NULL, *s;
-	int	rv;
+	int	rv, did_fallback = 0;
 
 	memset(&hints, 0, sizeof(hints));
 	hints.ai_flags = AI_ADDRCONFIG;
@@ -2160,8 +2160,15 @@ isns_get_address_list(const char *addrspec, const char *port,
 	if (af_hint == AF_INET6)
 		hints.ai_flags |= AI_V4MAPPED;
 
+repeat_gai:
 	rv = getaddrinfo(host, port, &hints, &found);
 	if (rv) {
+		/* isns port may not be in /etc/services */
+		if (strcmp(port, "isns") == 0) {
+			port = "3205";
+			did_fallback = 1;
+			goto repeat_gai;
+		}
 		isns_error("Cannot resolve address \"%s\": %s\n",
 			addrspec, gai_strerror(rv));
 		goto out;
@@ -2171,6 +2178,11 @@ isns_get_address_list(const char *addrspec, const char *port,
 		isns_error("No useable addresses returned.\n");
 		goto out;
 	}
+
+	/* Only check this here because the getaddrinfo error could
+	 * also be because the host name doesn't exist. */
+	if (did_fallback)
+		isns_warning("Warning: isns not in /etc/services, falling back to default 3205.\n");
 
 	res = clone_addrinfo(found);
 

@@ -169,19 +169,19 @@ $(SOLIB):
 endif
 
 isnsd: $(SRVOBJS) $(LIB) $(SOLIB)
-	$(CC) $(CFLAGS) -o $@ $(SRVOBJS) -L. -lisns -Wl,--as-needed $(SECLINK) $(SLPLINK)
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $(SRVOBJS) -L. -lisns -Wl,--as-needed $(SECLINK) $(SLPLINK)
 
 isnsdd: $(ISNSDD) $(LIB) $(SOLIB)
-	$(CC) $(CFLAGS) -o $@ $(ISNSDD) -L. -lisns -Wl,--as-needed $(SECLINK) $(SLPLINK)
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $(ISNSDD) -L. -lisns -Wl,--as-needed $(SECLINK) $(SLPLINK)
 
 isnsadm: $(ADMOBJS) $(LIB) $(SOLIB)
-	$(CC) $(CFLAGS) -o $@ $(ADMOBJS) -L. -lisns -Wl,--as-needed $(SECLINK) $(SLPLINK)
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $(ADMOBJS) -L. -lisns -Wl,--as-needed $(SECLINK) $(SLPLINK)
 
 tests/%: tests/%.o $(LIB) $(SOLIB)
-	$(CC) $(CFLAGS) -o $@ $@.o -L. -lisns -Wl,--as-needed $(SECLINK) $(SLPLINK)
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $@.o -L. -lisns -Wl,--as-needed $(SECLINK) $(SLPLINK)
 
 bitvector: bitvector.c $(LIB) $(SOLIB)
-	$(CC) -DTEST $(CFLAGS) -o $@ bitvector.c -L. -lisns
+	$(CC) -DTEST $(CFLAGS) $(LDFLAGS) -o $@ bitvector.c -L. -lisns
 
 depend:
 	$(CC) $(CFLAGS) -M `ls *.c` > .depend
