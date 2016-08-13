@@ -1,4 +1,4 @@
-/*
+	/*
  * PKI related functions
  *
  * Copyright (C) 2007 Olaf Kirch <olaf.kirch@oracle.com>
@@ -19,15 +19,53 @@
 #ifdef WITH_SECURITY
 
 /* versions prior to 9.6.8 didn't seem to have these */
-#if OPADDRCONFIGENSSL_VERSION_NUMBER < 0x00906080L
+#if OPENSSL_VERSION_NUMBER < 0x00906080L
 # define EVP_MD_CTX_init(c)	do { } while (0)
 # define EVP_MD_CTX_cleanup(c)	do { } while (0)
 #endif
-#if OPADDRCONFIGENSSL_VERSION_NUMBER < 0x00906070L
+#if OPENSSL_VERSION_NUMBER < 0x00906070L
 # define i2d_DSA_PUBKEY		i2d_DSA_PUBKEY_backwards
 
 static int	i2d_DSA_PUBKEY_backwards(DSA *, unsigned char **);
 #endif
+/* OpenSSL 1.1 made a lot of structures opaque, so we need to
+ * define the 1.1 wrappers in previous versions. */
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
+#define EVP_PKEY_base_id(o)  ((o)->type)
+#define EVP_PKEY_get0_DSA(o) ((o)->pkey.dsa)
+static EVP_MD_CTX *EVP_MD_CTX_new(void)
+{
+    EVP_MD_CTX *ctx = OPENSSL_malloc(sizeof(EVP_MD_CTX));
+    EVP_MD_CTX_init(ctx);
+    return ctx;
+}
+
+static void EVP_MD_CTX_free(EVP_MD_CTX *ctx)
+{
+    EVP_MD_CTX_cleanup(ctx);
+    OPENSSL_free(ctx);
+}
+void DSA_get0_key(const DSA *d,
+                  const BIGNUM **pub_key, const BIGNUM **priv_key)
+{
+    if (pub_key != NULL)
+        *pub_key = d->pub_key;
+    if (priv_key != NULL)
+        *priv_key = d->priv_key;
+}
+BN_GENCB *BN_GENCB_new(void)
+{
+    return OPENSSL_malloc(sizeof(BN_GENCB));
+}
+void BN_GENCB_free(BN_GENCB *cb)
+{
+    OPENSSL_free(cb);
+}
+#else
+/* EVP_dss1 is now gone completely, so just use EVP_sha1 instead. */
+#define EVP_dss1 EVP_sha1
+#endif
+
 
 static int	isns_openssl_init = 0;
 
@@ -117,14 +155,15 @@ isns_dsasig_sign(isns_security_t *ctx,
 {
 	static unsigned char signature[1024];
 	unsigned int	sig_len = sizeof(signature);
-	EVP_MD_CTX	md_ctx;
+	EVP_MD_CTX	*md_ctx;
 	EVP_PKEY	*pkey;
+	const BIGNUM    *priv_key = NULL;
 	int		err;
 
 	if ((pkey = peer->is_key) == NULL)
 		return 0;
 
-	if (pkey->type != EVP_PKEY_DSA) {
+	if (EVP_PKEY_base_id(pkey) != EVP_PKEY_DSA) {
 		isns_debug_message(
 			"Incompatible public key (spi=%s)\n",
 			peer->is_name);
@@ -134,7 +173,8 @@ isns_dsasig_sign(isns_security_t *ctx,
 		isns_error("isns_dsasig_sign: signature buffer too small\n");
 		return 0;
 	}
-	if (pkey->pkey.dsa->priv_key == NULL) {
+	DSA_get0_key(EVP_PKEY_get0_DSA(pkey), NULL, &priv_key);
+	if (priv_key == NULL) {
 		isns_error("isns_dsasig_sign: oops, seems to be a public key\n");
 		return 0;
 	}
@@ -142,13 +182,13 @@ isns_dsasig_sign(isns_security_t *ctx,
 	isns_debug_auth("Signing messages with spi=%s, DSA/%u\n",
 			peer->is_name, EVP_PKEY_bits(pkey));
 
-	EVP_MD_CTX_init(&md_ctx);
-	EVP_SignInit(&md_ctx, EVP_dss1());
-	isns_message_digest(&md_ctx, pdu, blk);
-	err = EVP_SignFinal(&md_ctx,
+	md_ctx = EVP_MD_CTX_new();
+	EVP_SignInit(md_ctx, EVP_dss1());
+	isns_message_digest(md_ctx, pdu, blk);
+	err = EVP_SignFinal(md_ctx,
 				signature, &sig_len,
 				pkey);
-	EVP_MD_CTX_cleanup(&md_ctx);
+	EVP_MD_CTX_free(md_ctx);
 
 	if (err == 0) {
 		isns_dsasig_report_errors("EVP_SignFinal failed", isns_error);
@@ -166,27 +206,27 @@ isns_dsasig_verify(isns_security_t *ctx,
 			buf_t *pdu,
 			const struct isns_authblk *blk)
 {
-	EVP_MD_CTX	md_ctx;
+	EVP_MD_CTX	*md_ctx;
 	EVP_PKEY	*pkey;
 	int		err;
 
 	if ((pkey = peer->is_key) == NULL)
 		return 0;
 
-	if (pkey->type != EVP_PKEY_DSA) {
+	if (EVP_PKEY_base_id(pkey) != EVP_PKEY_DSA) {
 		isns_debug_message(
 			"Incompatible public key (spi=%s)\n",
 			peer->is_name);
 		return 0;
 	}
 
-	EVP_MD_CTX_init(&md_ctx);
-	EVP_VerifyInit(&md_ctx, EVP_dss1());
-	isns_message_digest(&md_ctx, pdu, blk);
-	err = EVP_VerifyFinal(&md_ctx,
+	md_ctx = EVP_MD_CTX_new();
+	EVP_VerifyInit(md_ctx, EVP_dss1());
+	isns_message_digest(md_ctx, pdu, blk);
+	err = EVP_VerifyFinal(md_ctx,
 			blk->iab_sig, blk->iab_sig_len,
 			pkey);
-	EVP_MD_CTX_cleanup(&md_ctx);
+	EVP_MD_CTX_free(md_ctx);
 	
 	if (err == 0) {
 		isns_debug_auth("*** Incorrect signature ***\n");
@@ -265,7 +305,7 @@ isns_dsa_encode_public(EVP_PKEY *pkey, void **ptr, size_t *len)
 	int	bytes;
 
 	*ptr = NULL;
-	bytes = i2d_DSA_PUBKEY(pkey->pkey.dsa, (unsigned char **) ptr);
+	bytes = i2d_DSA_PUBKEY(EVP_PKEY_get0_DSA(pkey), (unsigned char **) ptr);
 	if (bytes < 0)
 		return 0;
 
@@ -398,6 +438,10 @@ isns_dsa_init_params(const char *filename)
 {
 	FILE	*fp;
 	DSA	*dsa;
+#if OPENSSL_VERSION_NUMBER >= 0x10002000L
+	BN_GENCB	*cb;
+#endif
+	const int dsa_key_bits = 1024;
 
 	if (access(filename, R_OK) == 0)
 		return 1;
@@ -409,8 +453,19 @@ isns_dsa_init_params(const char *filename)
 	}
 
 	isns_notice("Generating DSA parameters; this may take a while\n");
-	dsa = DSA_generate_parameters(1024, NULL, 0,
+#if OPENSSL_VERSION_NUMBER >= 0x10002000L
+	cb = BN_GENCB_new();
+	BN_GENCB_set(cb, (int (*)(int, int, BN_GENCB *)) isns_dsa_param_gen_callback, NULL);
+	dsa = DSA_new();
+	if (!DSA_generate_parameters_ex(dsa, dsa_key_bits, NULL, 0, NULL, NULL, cb)) {
+		DSA_free(dsa);
+		dsa = NULL;
+	}
+	BN_GENCB_free(cb);
+#else
+	dsa = DSA_generate_parameters(dsa_key_bits, NULL, 0,
 			NULL, NULL, isns_dsa_param_gen_callback, NULL);
+#endif
 	write(1, "\n", 1);
 
 	if (dsa == NULL) {
@@ -515,7 +570,7 @@ isns_create_simple_keystore(const char *dirname)
 	return (isns_keystore_t *) store;
 }
 
-#if OPADDRCONFIGENSSL_VERSION_NUMBER < 0x00906070L
+#if OPENSSL_VERSION_NUMBER < 0x00906070L
 #undef i2d_DSA_PUBKEY
 
 int

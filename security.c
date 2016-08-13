@@ -15,6 +15,10 @@
 
 #ifdef WITH_SECURITY
 
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
+#define EVP_PKEY_base_id(o) ((o)->type)
+#endif
+
 /*
  * Allocate a security peer
  */
@@ -37,7 +41,7 @@ isns_create_principal(const char *spi, size_t spi_len, EVP_PKEY *pk)
 	if (pk) {
 		const char	*algo;
 
-		switch (pk->type) {
+		switch (EVP_PKEY_base_id(pk)) {
 		case EVP_PKEY_DSA: algo = "DSA"; break;
 		case EVP_PKEY_RSA: algo = "RSA"; break;
 		default: algo = "unknown"; break;
