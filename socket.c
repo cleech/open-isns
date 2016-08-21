@@ -626,6 +626,9 @@ isns_net_stream_accept(isns_socket_t *sock)
 	child->is_error = isns_net_stream_error;
 	child->is_poll_mask = POLLIN|POLLHUP;
 	child->is_security = sock->is_security;
+	/* We need to check the domain of the socket later. */
+	memcpy(&child->is_src.addr, &sock->is_src.addr, sock->is_src.addrlen);
+	child->is_src.addrlen = sock->is_src.addrlen;
 
 	if (isns_config.ic_network.idle_timeout)
 		isns_net_set_timeout(child,
@@ -713,8 +716,13 @@ isns_net_recvmsg(isns_socket_t *sock,
 	iov.iov_len = count;
 
 	memset(&msg, 0, sizeof(msg));
-	msg.msg_name = addr;
-	msg.msg_namelen = *alen;
+	/* Some kernels don't provide peer names for AF_LOCAL sockets,
+	 * we'll synthesize a peer name based on the file descriptor
+	 * later. */
+	if (sock->is_dst.addr.ss_family != AF_LOCAL && sock->is_src.addr.ss_family != AF_LOCAL) {
+		msg.msg_name = addr;
+		msg.msg_namelen = *alen;
+	}
 	msg.msg_iov = &iov;
 	msg.msg_iovlen = 1;
 	msg.msg_control = control;
@@ -737,7 +745,20 @@ isns_net_recvmsg(isns_socket_t *sock,
 		cmsg = CMSG_NXTHDR(&msg, cmsg);
 	}
 
-	*alen = msg.msg_namelen;
+	if (sock->is_dst.addr.ss_family != AF_LOCAL && sock->is_src.addr.ss_family != AF_LOCAL) {
+		*alen = msg.msg_namelen;
+	} else {
+		/* AF_LOCAL sockets don't have valid peer names on some
+		 * kernels (e.g. Hurd), so synthesize one based on the
+		 * file descriptor number. (It's only used for matching
+		 * multiple PDUs based on their origin.) This is unique
+		 * because this function is only ever called for stream
+		 * sockets. */
+		struct sockaddr_un *sun = (struct sockaddr_un *)addr;
+		sun->sun_family = AF_LOCAL;
+		memcpy(&sun->sun_path, &sock->is_desc, sizeof(int));
+		*alen = offsetof(struct sockaddr_un, sun_path) + sizeof(int);
+	}
 	return len;
 }
 
@@ -1515,10 +1536,15 @@ isns_socket_open(isns_socket_t *sock)
 		src_addr = (struct sockaddr *) &sock->is_src.addr;
 		src_len = sock->is_src.addrlen;
 
-		/* For debugging only! */
-		if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on)) < 0) {
-			isns_error("setsockopt(SO_REUSEADDR) failed: %m\n");
-			goto failed;
+		/* GNU Hurd only supports SO_REUSEADDR for AF_INET, and
+		 * it's useless for AF_LOCAL on any platform. (unlink
+		 * is called before bind.) */
+		if (af == AF_INET || af == AF_INET6) {
+			/* For debugging only! */
+			if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on)) < 0) {
+				isns_error("setsockopt(SO_REUSEADDR) failed: %m\n");
+				goto failed;
+			}
 		}
 
 		switch (af) {

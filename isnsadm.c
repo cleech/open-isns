@@ -70,7 +70,7 @@ static int		opt_action = 0;
 static int		opt_local = 0;
 static int		opt_control = 0;
 static int		opt_replace = 0;
-static const char *	opt_keyfile = NULL;
+static char *		opt_keyfile = NULL;
 static char *		opt_key = NULL;
 static const char *	opt_servername = NULL;
 static struct sockaddr_storage opt_myaddr;
@@ -1051,9 +1051,11 @@ enroll_client(isns_client_t *clnt, int argc, char **argv)
 #endif
 
 	if (!opt_keyfile) {
-		static char 	namebuf[PATH_MAX];
-
-		snprintf(namebuf, sizeof(namebuf), "%s.key", client_name);
+		size_t capacity = strlen(client_name) + 5;
+		char *namebuf = isns_malloc(capacity);
+		if (!namebuf)
+			isns_fatal("Out of memory.");
+		snprintf(namebuf, capacity, "%s.key", client_name);
 		opt_keyfile = namebuf;
 	}
 
