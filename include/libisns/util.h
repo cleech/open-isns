@@ -100,15 +100,28 @@ enum {
  * There's no htonll yet
  */
 #ifndef htonll
-# include <endian.h>
-# include <byteswap.h>
-# if __BYTE_ORDER == __BIG_ENDIAN
-#  define htonll(x)	(x)
-#  define ntohll(x)	(x)
-# elif __BYTE_ORDER == __LITTLE_ENDIAN
-#  define htonll(x)	__bswap_64(x)
-#  define ntohll(x)	__bswap_64(x)
+# ifdef __GLIBC__
+#  include <endian.h>
+#  include <byteswap.h>
+#  if __BYTE_ORDER == __BIG_ENDIAN
+#   define htonll(x)	(x)
+#   define ntohll(x)	(x)
+#  elif __BYTE_ORDER == __LITTLE_ENDIAN
+#   define htonll(x)	__bswap_64(x)
+#   define ntohll(x)	__bswap_64(x)
+#  endif
+# else
+#  include <sys/endian.h>
+#  define htonll(x)     htobe64(x)
+#  define ntohll(x)     be64toh(x)
 # endif
+#endif
+
+/*
+ * FreeBSD's libc doesn't define this for userland code
+ */
+#ifndef s6_addr32
+#define s6_addr32 __u6_addr.__u6_addr32
 #endif
 
 /*
