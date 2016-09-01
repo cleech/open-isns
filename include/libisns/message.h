@@ -13,6 +13,22 @@
 
 typedef struct isns_message_queue isns_message_queue_t;
 
+#ifdef SCM_CREDENTIALS
+/* Linux-style SCM_CREDENTIALS + struct ucred */
+typedef struct ucred    struct_cmsgcred_t;
+#define CMSGCRED_uid    uid
+#define SCM_CREDENTIALS_portable SCM_CREDENTIALS
+#elif defined(SCM_CREDS)
+/* FreeBSD-style SCM_CREDS + struct cmsgcred_t */
+typedef struct cmsgcred struct_cmsgcred_t;
+#define CMSGCRED_uid    cmcred_euid
+#define SCM_CREDENTIALS_portable SCM_CREDS
+#else
+/* If a platform requires something else, this must be added
+ * here. */
+#error "Neither SCM_CREDENTIALS nor SCM_CREDS supported on your platform for credentials passing over AF_LOCAL sockets."
+#endif
+
 struct isns_simple {
 	uint32_t		is_function;
 	isns_source_t *		is_source;
@@ -35,7 +51,7 @@ struct isns_message {
 	struct isns_buf *	im_payload;
 	isns_socket_t *		im_socket;
 	isns_principal_t *	im_security;
-	struct ucred *		im_creds;
+	struct_cmsgcred_t *	im_creds;
 
 	isns_message_queue_t *	im_queue;
 

@@ -50,23 +50,31 @@ static int	__dbe_file_load_all(const char *,
 /*
  * Helper functions
  */
-static const char *
-__path_concat(const char *dirname, const char *basename)
+static char *
+__path_concat(const char *dirname, const char *prefix, const char *basename)
 {
-	static char	pathname[PATH_MAX];
+	size_t	capacity = strlen(dirname) + strlen(prefix) + strlen(basename) + 2;
+	char	*pathname;
 
-	snprintf(pathname, sizeof(pathname), "%s/%s",
-			dirname, basename);
+	pathname = isns_malloc(capacity);
+	if (!pathname)
+		isns_fatal("Out of memory.");
+	snprintf(pathname, capacity, "%s/%s%s",
+			dirname, prefix, basename);
 	return pathname;
 }
 
-static const char *
+static char *
 __print_index(uint32_t index)
 {
-	static char	namebuf[32];
+	char	namebuf[32];
+	char	*result;
 
 	snprintf(namebuf, sizeof(namebuf), "%08x", index);
-	return namebuf;
+	result = isns_strdup(namebuf);
+	if (!result)
+		isns_fatal("Out of memory.");
+	return result;
 }
 
 static int
@@ -83,25 +91,25 @@ __get_index(const char *name, uint32_t *result)
 /*
  * Build path names for an object
  */
-static const char *
+static char *
 __dbe_file_object_path(const char *dirname, const isns_object_t *obj)
 {
-	return __path_concat(dirname, __print_index(obj->ie_index));
+	char *index_str = __print_index(obj->ie_index);
+	char *result = __path_concat(dirname, "", index_str);
+	isns_free(index_str);
+	return result;
 }
 
 /*
  * Build a path name for a temporary file.
- * Cannot use __path_concat, because we need both names
- * when storing objects
  */
-static const char *
+static char *
 __dbe_file_object_temp(const char *dirname, const isns_object_t *obj)
 {
-	static char	pathname[PATH_MAX];
-
-	snprintf(pathname, sizeof(pathname), "%s/.%s",
-			dirname, __print_index(obj->ie_index));
-	return pathname;
+	char *index_str = __print_index(obj->ie_index);
+	char *result = __path_concat(dirname, ".", index_str);
+	isns_free(index_str);
+	return result;
 }
 
 /*
@@ -150,8 +158,8 @@ static int
 __dbe_file_store_object(const char *dirname, const isns_object_t *obj)
 {
 	struct isns_db_object_info info;
-	const char	*path = __dbe_file_object_path(dirname, obj);
-	const char	*temp = __dbe_file_object_temp(dirname, obj);
+	char		*path = __dbe_file_object_path(dirname, obj);
+	char		*temp = __dbe_file_object_temp(dirname, obj);
 	buf_t		*bp = NULL;
 	int		status = ISNS_INTERNAL_ERROR;
 
@@ -196,6 +204,8 @@ __dbe_file_store_object(const char *dirname, const isns_object_t *obj)
 	}
 
 out:
+	isns_free(path);
+	isns_free(temp);
 	if (bp)
 		buf_close(bp);
 	return status;
@@ -231,11 +241,12 @@ __dbe_file_store_children(const char *dirname, const isns_object_t *obj)
 static int
 __dbe_file_remove_object(const char *dirname, const isns_object_t *obj)
 {
-	const char	*path = __dbe_file_object_path(dirname, obj);
+	char		*path = __dbe_file_object_path(dirname, obj);
 
 	isns_debug_state("DB: Purging object %u (%s)\n", obj->ie_index, path);
 	if (unlink(path) < 0)
 		isns_error("DB: Cannot remove %s: %m\n", path);
+	isns_free(path);
 	return ISNS_SUCCESS;
 }
 
@@ -354,13 +365,13 @@ __dbe_file_load_all(const char *dirpath, isns_object_list_t *result)
 
 	while ((dp = readdir(dir)) != NULL) {
 		struct stat	stb;
-		const char	*path;
+		char		*path;
 
 		if (dp->d_name[0] == '.'
 		 || !strcmp(dp->d_name, "DB"))
 			continue;
 
-		path = __path_concat(dirpath, dp->d_name);
+		path = __path_concat(dirpath, "", dp->d_name);
 		if (lstat(path, &stb) < 0) {
 			isns_error("DB: cannot stat %s: %m\n", path);
 			status = ISNS_INTERNAL_ERROR;
@@ -371,6 +382,7 @@ __dbe_file_load_all(const char *dirpath, isns_object_list_t *result)
 		} else {
 			isns_debug_state("DB: ignoring %s\n", path);
 		}
+		isns_free(path);
 
 		if (status != ISNS_SUCCESS)
 			break;
@@ -387,11 +399,11 @@ static int
 __dbe_file_write_info(isns_db_t *db)
 {
 	isns_db_backend_t *back = db->id_backend;
-	const char	*path;
+	char		*path = NULL;
 	buf_t		*bp;
 	int		status = ISNS_INTERNAL_ERROR;
 
-	path = __path_concat(back->idb_name, "DB");
+	path = __path_concat(back->idb_name, "", "DB");
 	if ((bp = buf_open(path, O_CREAT|O_TRUNC|O_WRONLY)) == NULL) {
 		isns_error("Unable to write %s: %m\n", path);
 		goto out;
@@ -403,6 +415,7 @@ __dbe_file_write_info(isns_db_t *db)
 		status = ISNS_SUCCESS;
 
 out:
+	isns_free(path);
 	if (bp)
 		buf_close(bp);
 	return status;
@@ -413,11 +426,11 @@ __dbe_file_load_info(isns_db_t *db)
 {
 	isns_db_backend_t *back = db->id_backend;
 	struct isns_db_file_info info;
-	const char	*path;
+	char		*path = NULL;
 	buf_t		*bp = NULL;
 	int		status = ISNS_NO_SUCH_ENTRY;
 
-	path = __path_concat(back->idb_name, "DB");
+	path = __path_concat(back->idb_name, "", "DB");
 	if ((bp = buf_open(path, O_RDONLY)) == NULL)
 		goto out;
 
@@ -445,6 +458,7 @@ __dbe_file_load_info(isns_db_t *db)
 	}
 
 out:
+	isns_free(path);
 	if (bp)
 		buf_close(bp);
 	return status;

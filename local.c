@@ -131,11 +131,16 @@ out:
 static FILE *
 __isns_local_registry_open_write(char **lock_name)
 {
-	char	lock_path[PATH_MAX];
+	char	*lock_path;
+	size_t  capacity;
 	FILE	*fp;
 	int	fd, retry;
 
-	snprintf(lock_path, sizeof(lock_path), "%s.lock",
+	capacity = strlen(isns_config.ic_local_registry_file) + 6;
+	lock_path = isns_malloc(capacity);
+	if (!lock_path)
+		isns_fatal("Out of memory");
+	snprintf(lock_path, capacity, "%s.lock",
 			isns_config.ic_local_registry_file);
 
 	for (retry = 0; retry < 5; ++retry) {
@@ -145,6 +150,7 @@ __isns_local_registry_open_write(char **lock_name)
 		if (errno != EEXIST) {
 			isns_error("Unable to create %s: %m\n",
 					lock_path);
+			isns_free(lock_path);
 			return NULL;
 		}
 		isns_error("Cannot lock %s - retry in 1 sec\n",
@@ -155,9 +161,11 @@ __isns_local_registry_open_write(char **lock_name)
 	if (!(fp = fdopen(fd, "w"))) {
 		isns_error("fdopen failed: %m\n");
 		close(fd);
+		isns_free(lock_path);
 		return NULL;
 	}
-	isns_assign_string(lock_name, lock_path);
+	isns_free(*lock_name);
+	*lock_name = lock_path;
 	return fp;
 }
 

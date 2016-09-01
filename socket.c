@@ -342,7 +342,7 @@ isns_pdu_authenticate(isns_security_t *sec,
 static void
 isns_pdu_enqueue(isns_socket_t *sock,
 		struct sockaddr_storage *addr, socklen_t alen,
-		buf_t *segment, struct ucred *creds)
+		buf_t *segment, struct_cmsgcred_t *creds)
 {
 	isns_message_queue_t *q = &sock->is_partial;
 	struct isns_partial_msg *msg;
@@ -594,8 +594,11 @@ void
 isns_net_stream_accept(isns_socket_t *sock)
 {
 	isns_socket_t *child;
+	int	fd;
+#ifdef SO_PASSCRED
+	int	passcred = 0;
 	socklen_t optlen;
-	int	fd, passcred = 0;
+#endif
 
 	fd = accept(sock->is_desc, NULL, NULL);
 	if (fd < 0) {
@@ -604,12 +607,14 @@ isns_net_stream_accept(isns_socket_t *sock)
 		return;
 	}
 
+#ifdef SO_PASSCRED
 	optlen = sizeof(passcred);
 	if (getsockopt(sock->is_desc, SOL_SOCKET, SO_PASSCRED,
 				&passcred, &optlen) >= 0) {
 		setsockopt(fd, SOL_SOCKET, SO_PASSCRED,
 				&passcred, sizeof(passcred));
 	}
+#endif
 
 	child = isns_net_alloc(fd);
 	child->is_type = SOCK_STREAM;
@@ -621,6 +626,9 @@ isns_net_stream_accept(isns_socket_t *sock)
 	child->is_error = isns_net_stream_error;
 	child->is_poll_mask = POLLIN|POLLHUP;
 	child->is_security = sock->is_security;
+	/* We need to check the domain of the socket later. */
+	memcpy(&child->is_src.addr, &sock->is_src.addr, sock->is_src.addrlen);
+	child->is_src.addrlen = sock->is_src.addrlen;
 
 	if (isns_config.ic_network.idle_timeout)
 		isns_net_set_timeout(child,
@@ -693,10 +701,10 @@ static int
 isns_net_recvmsg(isns_socket_t *sock,
 		void *buffer, size_t count,
 		struct sockaddr *addr, socklen_t *alen,
-		struct ucred **cred)
+		struct_cmsgcred_t **cred)
 {
-	static struct ucred cred_buf;
-	unsigned int	control[128];
+	static struct_cmsgcred_t cred_buf;
+	unsigned int	control[128 + sizeof(cred_buf)];
 	struct cmsghdr	*cmsg;
 	struct msghdr	msg;
 	struct iovec	iov;
@@ -708,8 +716,13 @@ isns_net_recvmsg(isns_socket_t *sock,
 	iov.iov_len = count;
 
 	memset(&msg, 0, sizeof(msg));
-	msg.msg_name = addr;
-	msg.msg_namelen = *alen;
+	/* Some kernels don't provide peer names for AF_LOCAL sockets,
+	 * we'll synthesize a peer name based on the file descriptor
+	 * later. */
+	if (sock->is_dst.addr.ss_family != AF_LOCAL && sock->is_src.addr.ss_family != AF_LOCAL) {
+		msg.msg_name = addr;
+		msg.msg_namelen = *alen;
+	}
 	msg.msg_iov = &iov;
 	msg.msg_iovlen = 1;
 	msg.msg_control = control;
@@ -723,7 +736,7 @@ isns_net_recvmsg(isns_socket_t *sock,
 	cmsg = CMSG_FIRSTHDR(&msg);
 	while (cmsg) {
 		if (cmsg->cmsg_level == SOL_SOCKET
-		 && cmsg->cmsg_type == SCM_CREDENTIALS) {
+		 && cmsg->cmsg_type == SCM_CREDENTIALS_portable) {
 			memcpy(&cred_buf, CMSG_DATA(cmsg), sizeof(cred_buf));
 			*cred = &cred_buf;
 			break;
@@ -732,7 +745,20 @@ isns_net_recvmsg(isns_socket_t *sock,
 		cmsg = CMSG_NXTHDR(&msg, cmsg);
 	}
 
-	*alen = msg.msg_namelen;
+	if (sock->is_dst.addr.ss_family != AF_LOCAL && sock->is_src.addr.ss_family != AF_LOCAL) {
+		*alen = msg.msg_namelen;
+	} else {
+		/* AF_LOCAL sockets don't have valid peer names on some
+		 * kernels (e.g. Hurd), so synthesize one based on the
+		 * file descriptor number. (It's only used for matching
+		 * multiple PDUs based on their origin.) This is unique
+		 * because this function is only ever called for stream
+		 * sockets. */
+		struct sockaddr_un *sun = (struct sockaddr_un *)addr;
+		sun->sun_family = AF_LOCAL;
+		memcpy(&sun->sun_path, &sock->is_desc, sizeof(int));
+		*alen = offsetof(struct sockaddr_un, sun_path) + sizeof(int);
+	}
 	return len;
 }
 
@@ -741,7 +767,7 @@ isns_net_stream_recv(isns_socket_t *sock)
 {
 	unsigned char	buffer[ISNS_MAX_BUFFER];
 	struct sockaddr_storage addr;
-	struct ucred	*creds = NULL;
+	struct_cmsgcred_t *creds = NULL;
 	socklen_t	alen = sizeof(addr);
 	buf_t		*bp;
 	size_t		count, total = 0;
@@ -803,6 +829,41 @@ again:
 	goto again;
 }
 
+#ifndef SO_PASSCRED
+/* Without SO_PASSCRED, we need to make sure that credentials are
+ * added to all sent messages. (Otherwise recvmsg will not receive
+ * any credentials. */
+ssize_t send_with_creds(int sockfd, const void *buf, size_t len, int flags)
+{
+	unsigned char	control[CMSG_SPACE(sizeof(struct_cmsgcred_t))];
+	struct cmsghdr	*cmsg;
+	struct msghdr	msg;
+	struct iovec	iov;
+
+	iov.iov_base = (void *)buf;
+	iov.iov_len = len;
+
+	memset(&msg, 0, sizeof(msg));
+	msg.msg_name = NULL;
+	msg.msg_namelen = 0;
+	msg.msg_iov = &iov;
+	msg.msg_iovlen = 1;
+
+	memset(&control, 0, sizeof(control));
+	msg.msg_control = control;
+	msg.msg_controllen = sizeof(control);
+
+	cmsg = CMSG_FIRSTHDR(&msg);
+	cmsg->cmsg_len = CMSG_LEN(sizeof(struct_cmsgcred_t));
+	cmsg->cmsg_level = SOL_SOCKET;
+	cmsg->cmsg_type = SCM_CREDENTIALS_portable;
+	/* The kernel will fill the actual data structure for us, so
+	 * there's no need to bother with doing that ourselves. */
+
+	return sendmsg(sockfd, &msg, flags);
+}
+#endif
+
 void
 isns_net_stream_xmit(isns_socket_t *sock)
 {
@@ -822,7 +883,19 @@ isns_net_stream_xmit(isns_socket_t *sock)
 		return;
 
 	count = buf_avail(bp);
+#ifndef SO_PASSCRED
+	/* If SO_PASSCRED is not available, we need to ensure we add
+	 * credentials to every sent message. Only do this for AF_LOCAL
+	 * sockets though, as this won't work on AF_INET{,6}. Check
+	 * both is_src and is_dst for AF_LOCAL, because one of them
+	 * might be AF_UNSPEC. */
+	if (sock->is_dst.addr.ss_family == AF_LOCAL || sock->is_src.addr.ss_family == AF_LOCAL)
+		len = send_with_creds(sock->is_desc, buf_head(bp), count, MSG_DONTWAIT);
+	else
+		len = send(sock->is_desc, buf_head(bp), count, MSG_DONTWAIT);
+#else
 	len = send(sock->is_desc, buf_head(bp), count, MSG_DONTWAIT);
+#endif
 	if (len < 0) {
 		isns_net_stream_error(sock, errno);
 		return;
@@ -1432,6 +1505,7 @@ static int
 isns_socket_open(isns_socket_t *sock)
 {
 	int	af, fd, state = ISNS_SOCK_IDLE;
+	int	no = 0;
 
 	if (sock->is_desc >= 0)
 		return 1;
@@ -1462,26 +1536,39 @@ isns_socket_open(isns_socket_t *sock)
 		src_addr = (struct sockaddr *) &sock->is_src.addr;
 		src_len = sock->is_src.addrlen;
 
-		/* For debugging only! */
-		if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on)) < 0) {
-			isns_error("setsockopt(SO_REUSEADDR) failed: %m\n");
-			goto failed;
+		/* GNU Hurd only supports SO_REUSEADDR for AF_INET, and
+		 * it's useless for AF_LOCAL on any platform. (unlink
+		 * is called before bind.) */
+		if (af == AF_INET || af == AF_INET6) {
+			/* For debugging only! */
+			if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on)) < 0) {
+				isns_error("setsockopt(SO_REUSEADDR) failed: %m\n");
+				goto failed;
+			}
 		}
 
 		switch (af) {
 		case AF_LOCAL:
 			unlink(((struct sockaddr_un *) src_addr)->sun_path);
 
+#ifdef SO_PASSCRED
 			if (sock->is_type == SOCK_STREAM
 			 && setsockopt(fd, SOL_SOCKET, SO_PASSCRED,
 				 		&on, sizeof(on)) < 0) {
 				isns_error("setsockopt(SO_PASSCRED) failed: %m\n");
 				goto failed;
 			}
+#endif
 			break;
 
-		case AF_INET:
 		case AF_INET6:
+#ifdef IPV6_V6ONLY
+			if (setsockopt(fd, IPPROTO_IPV6, IPV6_V6ONLY, (void *)&no, sizeof(no))) {
+				isns_warning("setsockopt(IPV6_V6ONLY, false) failed: %m");
+			}
+#endif
+			/* no break, fall through */
+		case AF_INET:
 			if (isns_addr_get_port(src_addr) == 0) {
 				if (!__isns_socket_bind_random(fd, src_addr, src_len))
 					goto failed;

@@ -90,7 +90,7 @@ isns_policy_bind(const isns_message_t *msg)
 
 	/* If the caller is the local root user, s/he can
 	 * do anything. */
-	if (msg->im_creds && msg->im_creds->uid == 0) {
+	if (msg->im_creds && msg->im_creds->CMSGCRED_uid == 0) {
 		policy = &isns_superhero_powers;
 		goto found;
 	}

@@ -542,19 +542,29 @@ __isns_simple_keystore_find(isns_keystore_t *store_base,
 		const char *name, size_t namelen)
 {
 	isns_simple_keystore_t *store = (isns_simple_keystore_t *) store_base;
-	char		pathname[PATH_MAX];
+	char		*pathname;
+	size_t		capacity;
+	EVP_PKEY	*result;
 
 	/* Refuse to open key files with names
 	 * that refer to parent directories */
 	if (memchr(name, '/', namelen) || name[0] == '.')
 		return NULL;
 
-	snprintf(pathname, sizeof(pathname),
+	capacity = strlen(store->sc_dirpath) + 2 + namelen;
+	pathname = isns_malloc(capacity);
+	if (!pathname)
+		isns_fatal("Out of memory.");
+	snprintf(pathname, capacity,
 			"%s/%.*s", store->sc_dirpath,
 			(int) namelen, name);
-	if (access(pathname, R_OK) < 0)
+	if (access(pathname, R_OK) < 0) {
+		isns_free(pathname);
 		return NULL;
-	return isns_dsasig_load_public_pem(NULL, pathname);
+	}
+	result = isns_dsasig_load_public_pem(NULL, pathname);
+	isns_free(pathname);
+	return result;
 }
 
 isns_keystore_t *

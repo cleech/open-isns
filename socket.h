@@ -20,7 +20,7 @@ struct isns_partial_msg {
 	unsigned int		imp_msg_size;
 	buf_t *			imp_chain;
 
-	struct ucred		imp_credbuf;
+	struct_cmsgcred_t	imp_credbuf;
 };
 
 #define imp_users		imp_base.im_users
