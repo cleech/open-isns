@@ -146,7 +146,7 @@ buf_clear(buf_t *bp)
 	bp->head = bp->tail = 0;
 }
 
-int
+static int
 buf_fill(buf_t *bp)
 {
 	int	n;
