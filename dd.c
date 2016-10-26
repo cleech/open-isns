@@ -2,7 +2,7 @@
  * Handle DD registration/deregistration
  *
  * Discovery domains are weird, even in the context of
- * iSNS. For once thing, all other objects have unique
+ * iSNS. For one thing, all other objects have unique
  * attributes; DDs attributes can appear several times.
  * They should really have made each DD member an object
  * in its own right.
@@ -381,7 +381,7 @@ isns_process_dd_deregistration(isns_server_t *srv, isns_simple_t *call, isns_sim
 		if (status != ISNS_SUCCESS)
 			goto out;
 
-		/* Send notifications. This must be done before after
+		/* Send notifications. This must be done before
 		 * updating the DD.
 		 */
 		isns_dd_notify(dd, dd->dd_members, temp_dd->dd_members,

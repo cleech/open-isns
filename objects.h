@@ -64,7 +64,7 @@ struct isns_object {
 	 *
 	 *	The main purpose of these references is to
 	 *	model some of the weirder life cycle states
-	 *	described in RFC 4711.
+	 *	described in RFC 4171.
 	 *
 	 * Every reference via ie_references implies a
 	 * reference via ie_users.
