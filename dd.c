@@ -915,6 +915,9 @@ isns_dd_parse_attrs(isns_dd_t *dd, isns_db_t *db,
 					*tail = new;
 					tail = &new->ddm_next;
 				}
+
+				/* mark this object as a member of this DD */
+				isns_object_mark_membership(obj, dd->dd_id);
 			}
 			isns_object_release(obj);
 		}
@@ -1039,10 +1042,6 @@ isns_dd_add_members(isns_dd_t *dd, isns_db_t *db, isns_dd_t *new_dd)
 		if (obj->ie_index == 0)
 			isns_db_insert_limbo(db, obj);
 		mp->ddm_index = obj->ie_index;
-
-		/* Record the fact that the object is a member of
-		 * this DD */
-		isns_object_mark_membership(obj, dd->dd_id);
 
 		switch (mp->ddm_type) {
 		case ISNS_DD_MEMBER_ISCSI_NODE:
