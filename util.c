@@ -40,7 +40,7 @@ parse_size(const char *arg)
 
     default:
     bad:
-	err(1, "parse_size: unknown unit in \"%s\"\n", arg);
+	err(1, "parse_size: unknown unit in \"%s\"", arg);
     }
 
     if (*s != '\0')
@@ -78,7 +78,7 @@ parse_count(const char *arg)
 
     ret = strtoul(arg, &s, 0);
     if (*s != '\0')
-	err(1, "parse_count: unexpected character in \"%s\"\n", arg);
+	err(1, "parse_count: unexpected character in \"%s\"", arg);
 
     return ret;
 }
@@ -91,7 +91,7 @@ parse_int(const char *arg)
 
     ret = strtol(arg, &s, 0);
     if (*s != '\0')
-	err(1, "parse_count: unexpected character in \"%s\"\n", arg);
+	err(1, "parse_count: unexpected character in \"%s\"", arg);
 
     return ret;
 }
@@ -104,7 +104,7 @@ parse_longlong(const char *arg)
 
     ret = strtoll(arg, &s, 0);
     if (*s != '\0')
-	err(1, "parse_count: unexpected character in \"%s\"\n", arg);
+	err(1, "parse_count: unexpected character in \"%s\"", arg);
 
     return ret;
 }
@@ -117,7 +117,7 @@ parse_double(const char *arg)
 
 	ret = strtod(arg, &s);
 	if (*s != '\0')
-		err(1, "parse_count: unexpected character in \"%s\"\n", arg);
+		err(1, "parse_count: unexpected character in \"%s\"", arg);
 
 	return ret;
 }
