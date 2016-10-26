@@ -412,8 +412,7 @@ found:
 		 */
 		if (!isns_pdu_authenticate(sock->is_security, msg, segment))
 			goto drop;
-	} else
-	if (msg->imp_header.i_flags & ISNS_F_AUTHBLK_PRESENT) {
+	} else if (msg->imp_header.i_flags & ISNS_F_AUTHBLK_PRESENT) {
 		/* Oops, unauthenticated fragment in an
 		 * authenticated message. */
 		isns_debug_message(
