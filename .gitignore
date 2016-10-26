@@ -1,1 +1,7 @@
 *.o
+TAGS
+cscope.files
+isnsadm
+isnsd
+isnsdd
+libisns.a
