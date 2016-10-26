@@ -1203,6 +1203,10 @@ isns_dd_load_all(isns_db_t *db)
 
 		dd = isns_dd_clone(temp_dd);
 
+		/*
+		 * XXX duplicate call? isns_object_get() is already called
+		 * at the end of isns_dd_clone()
+		 */
 		dd->dd_object = isns_object_get(obj);
 
 		isns_dd_insert(dd);
