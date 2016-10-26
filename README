@@ -183,3 +183,11 @@ Author:
 
 Current maintainer:
 	Lee Duncan <lduncan@suse.com>		2015
+
+------------------------------------------------------------------
+
+Things to do:
+
+* fully implement/require device discovery sets
+* implement automated testing
+* implement ability to pass in flags to systemd service file for isnsd
