@@ -189,5 +189,7 @@ Current maintainer:
 Things to do:
 
 * fully implement/require device discovery sets
-* implement automated testing
 * implement ability to pass in flags to systemd service file for isnsd
+* improve automated testing (using PyUnit?)
+* ensure all tests pass (!!)
+* document testing procedure
