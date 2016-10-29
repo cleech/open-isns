@@ -33,7 +33,7 @@
  *   https://sourceware.org/binutils/docs/ld/VERSION.html
  */
 
-LIBISNS_0.97 {
+LIBISNS_0.96 {
 global:
 	isns_add_oneshot_timer;
 	isns_add_principal;
@@ -451,4 +451,4 @@ global:
 	isns_slp_build_url;
 	isns_slp_register;
 	isns_slp_unregister;
-} LIBISNS_0.97;
+} LIBISNS_0.96;
