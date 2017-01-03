@@ -111,7 +111,11 @@ enum {
 #   define ntohll(x)	__bswap_64(x)
 #  endif
 # else
-#  include <sys/endian.h>
+#  if defined(__FreeBSD__)
+#   include <sys/endian.h>
+#  else
+#   include <endian.h>
+#  endif
 #  define htonll(x)     htobe64(x)
 #  define ntohll(x)     be64toh(x)
 # endif
