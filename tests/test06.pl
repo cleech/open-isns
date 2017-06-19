@@ -26,25 +26,25 @@ unless ($eid) {
 }
 
 # Now replace the portal with different values
-&isns_register_client($client, "--replace entity=$eid initiator portal=192.168.1.1:iscsi");
-&isns_register_client($client, "--replace entity=$eid initiator portal=192.168.1.2:iscsi");
+&isns_register_client($client, "--replace entity=$eid initiator portal=192.168.1.1:860");
+&isns_register_client($client, "--replace entity=$eid initiator portal=192.168.1.2:860");
 
 &isns_register_domain($client, "member-name=isns.client1");
 
 # Replace our registration once more. Now the object index of the
 # initiator should not change, since it's a domain member now.
-&isns_register_client($client, "--replace entity=$eid initiator portal=192.168.1.1:iscsi");
+&isns_register_client($client, "--replace entity=$eid initiator portal=192.168.1.1:860");
 
 # Make the portal a domain member too. Now even the portal index should stay
 # the same. Note that we do not replace the whole entity now, but just the
 # portal
 &isns_register_domain($client, "dd-id=1 member-addr=192.168.1.1 member-port=860");
-&isns_register_client($client, "--replace --key portal=192.168.1.1:iscsi portal=192.168.1.2:iscsi");
-&isns_register_client($client, "--replace --key portal=192.168.1.2:iscsi portal=192.168.1.1:iscsi");
+&isns_register_client($client, "--replace --key portal=192.168.1.1:860 portal=192.168.1.2:860");
+&isns_register_client($client, "--replace --key portal=192.168.1.2:860 portal=192.168.1.1:860");
 
 # Now unregister the whole client, and re-register.
 # Portal and client index should remain the same
 &isns_unregister_client($client, "eid=$eid");
-&isns_register_client($client, "initiator portal=192.168.1.1:iscsi");
+&isns_register_client($client, "initiator portal=192.168.1.1:860");
 
 &isns_finish;
