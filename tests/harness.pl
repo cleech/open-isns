@@ -365,7 +365,7 @@ sub isns_verify_db {
 	die "Test case forgot to call test_prep" unless($__isns_test_data);
 
 	$dump_file = "$__isns_test_dump/$stage";
-	unless (&run_command("${__isns_bin}/isnsd -c $server_config --dump-db > $dump_file")) {
+	unless (&run_command("${__isns_bin}isnsd -c $server_config --dump-db > $dump_file")) {
 		&isns_fail;
 		return 0;
 	}
@@ -609,7 +609,7 @@ sub run_client {
 
 	$logfile = &get_logfile($config);
 
-	$cmd = "${__isns_bin}/isnsadm -c $client_config " . join(' ', @args);
+	$cmd = "${__isns_bin}isnsadm -c $client_config " . join(' ', @args);
 	if (&run_command("$cmd >$logfile")) {
 		return $logfile;
 	}
@@ -838,7 +838,7 @@ sub isns_external_test {
 	$stage = $cmd;
 	$stage =~ s:.*/::o;
 
-	$cmd = "${__isns_bin}/$cmd -c $client " . join(' ', @args);
+	$cmd = "${__isns_bin}$cmd -c $client " . join(' ', @args);
 
 	&isns_stage($stage, "Running external $cmd " . join(' ', @args));
 	unless (&run_command("$cmd >$logfile")) {
