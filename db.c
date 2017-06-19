@@ -929,7 +929,7 @@ void
 isns_db_print(isns_db_t *db, isns_print_fn_t *fn)
 {
 	const isns_object_list_t *list = db->id_objects;
-	unsigned int	i;
+	unsigned int	i, j;
 
 	fn("Dumping database contents\n"
 	   "Backend:     %s\n"
@@ -940,22 +940,26 @@ isns_db_print(isns_db_t *db, isns_print_fn_t *fn)
 	   db->id_last_eid,
 	   db->id_last_index);
 
-	for (i = 0; i < list->iol_count; ++i) {
-		isns_object_t *obj = list->iol_data[i];
-
-		fn("--------------\n"
-		   "Object:      index=%u type=<%s> state=%s",
-		   obj->ie_index,
-		   obj->ie_template->iot_name,
-		   isns_object_state_string(obj->ie_state));
-		if (obj->ie_container)
-			fn(" parent=%u", obj->ie_container->ie_index);
-		if (obj->ie_flags & ISNS_OBJECT_DIRTY)
-			fn(" DIRTY");
-		if (obj->ie_flags & ISNS_OBJECT_PRIVATE)
-			fn(" PRIVATE");
-		fn("\n");
-		isns_attr_list_print(&obj->ie_attrs, fn);
+	for (i = 0; i < db->id_last_index; ++i) {
+		for (j = 0; j < list->iol_count; ++j) {
+			isns_object_t *obj = list->iol_data[j];
+			if (obj->ie_index != i) {
+				continue;
+			}
+			fn("--------------\n"
+			   "Object:      index=%u type=<%s> state=%s",
+			   obj->ie_index,
+			   obj->ie_template->iot_name,
+			   isns_object_state_string(obj->ie_state));
+			if (obj->ie_container)
+				fn(" parent=%u", obj->ie_container->ie_index);
+			if (obj->ie_flags & ISNS_OBJECT_DIRTY)
+				fn(" DIRTY");
+			if (obj->ie_flags & ISNS_OBJECT_PRIVATE)
+				fn(" PRIVATE");
+			fn("\n");
+			isns_attr_list_print(&obj->ie_attrs, fn);
+		}
 	}
 }
 
