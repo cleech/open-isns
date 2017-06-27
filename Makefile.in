@@ -150,8 +150,8 @@ distclean::
 	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c -o $@ $^
 
-$(filter-out solib-message.o, $(SOLIBOBJS)): $(patsubst solib-%.o,%.c,$@)
-	$(CC) $(CFLAGS) $(CPPFLAGS) -fPIC -c -o $@ $(patsubst solib-%.o,%.c,$@)
+solib-%.o: %.c
+	$(CC) $(CFLAGS) $(CPPFLAGS) -fPIC -c -o $@ $<
 
 message.o: message.c
 	$(CC) $(CFLAGS) $(CPPFLAGS) $(IQNFLAGS) -c -o $@ $<
