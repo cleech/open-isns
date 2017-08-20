@@ -1,3 +1,4 @@
+srcdir = @srcdir@
 prefix	= @prefix@
 exec_prefix = @exec_prefix@
 sbindir	= @sbindir@
@@ -9,6 +10,7 @@ systemddir = $(prefix)/lib/systemd/system
 datarootdir = @datarootdir@
 includedir = @includedir@
 
+VPATH = $(srcdir)
 SBINDIR	= $(DESTDIR)$(sbindir)
 CFGDIR	= $(DESTDIR)$(etcdir)/isns
 MANDIR	= $(DESTDIR)$(mandir)
@@ -26,14 +28,14 @@ else
 BUILD_STATIC  = $(ENABLE_STATIC)
 endif
 ifeq ($(HAVE_LD_VERSION_SCRIPT),1)
-SOLIB_VERSION_OPTS = -Wl,--version-script=libisns.vers
+SOLIB_VERSION_OPTS = -Wl,--version-script=$(srcdir)/libisns.vers
 else
 SOLIB_VERSION_OPTS =
 endif
 
 CC	= @CC@
 CPPFLAGS= @CPPFLAGS@
-CFLAGS	= @CFLAGS@ -I. -Iinclude
+CFLAGS	= @CFLAGS@ -I. -Iinclude -I$(srcdir) -I$(srcdir)/include
 LDFLAGS	= @LDFLAGS@
 INSTALL = @INSTALL@
 
@@ -84,15 +86,15 @@ LIBOBJS	= server.o \
 	  bitvector.o \
 	  mdebug.o
 SOLIBOBJS = $(patsubst %.o,solib-%.o,$(LIBOBJS))
-HDRS    = include/libisns/attrs.h \
-	  include/libisns/buffer.h \
-	  include/libisns/isns.h \
-	  include/libisns/isns-proto.h \
-	  include/libisns/message.h \
+HDRS    = $(srcdir)/include/libisns/attrs.h \
+	  $(srcdir)/include/libisns/buffer.h \
+	  $(srcdir)/include/libisns/isns.h \
+	  $(srcdir)/include/libisns/isns-proto.h \
+	  $(srcdir)/include/libisns/message.h \
 	  include/libisns/paths.h \
-	  include/libisns/source.h \
-	  include/libisns/types.h \
-	  include/libisns/util.h
+	  $(srcdir)/include/libisns/source.h \
+	  $(srcdir)/include/libisns/types.h \
+	  $(srcdir)/include/libisns/util.h
 
 SECLINK	= @SECLIBS@
 SLPLINK	= @SLPLIBS@
@@ -110,15 +112,15 @@ install:
 	$(INSTALL) -m 755 -d $(CFGDIR) $(MANDIR)/man8 $(MANDIR)/man5 $(SBINDIR) $(SYSTEMDDIR)
 	$(INSTALL) -m 700 -d $(VARDIR)
 	$(INSTALL) -m 555 isnsd isnsadm isnsdd $(SBINDIR)
-	$(INSTALL) -m 644 etc/isnsd.conf $(CFGDIR)
-	$(INSTALL) -m 644 etc/isnsdd.conf $(CFGDIR)
-	$(INSTALL) -m 644 etc/isnsadm.conf $(CFGDIR)
-	$(INSTALL) -m 644 doc/isnsd.8 $(MANDIR)/man8
-	$(INSTALL) -m 644 doc/isnsdd.8 $(MANDIR)/man8
-	$(INSTALL) -m 644 doc/isnsadm.8 $(MANDIR)/man8
-	$(INSTALL) -m 644 doc/isns_config.5 $(MANDIR)/man5
-	$(INSTALL) -m 644 isnsd.service $(SYSTEMDDIR)
-	$(INSTALL) -m 644 isnsd.socket $(SYSTEMDDIR)
+	$(INSTALL) -m 644 $(srcdir)/etc/isnsd.conf $(CFGDIR)
+	$(INSTALL) -m 644 $(srcdir)/etc/isnsdd.conf $(CFGDIR)
+	$(INSTALL) -m 644 $(srcdir)/etc/isnsadm.conf $(CFGDIR)
+	$(INSTALL) -m 644 $(srcdir)/doc/isnsd.8 $(MANDIR)/man8
+	$(INSTALL) -m 644 $(srcdir)/doc/isnsdd.8 $(MANDIR)/man8
+	$(INSTALL) -m 644 $(srcdir)/doc/isnsadm.8 $(MANDIR)/man8
+	$(INSTALL) -m 644 $(srcdir)/doc/isns_config.5 $(MANDIR)/man5
+	$(INSTALL) -m 644 $(srcdir)/isnsd.service $(SYSTEMDDIR)
+	$(INSTALL) -m 644 $(srcdir)/isnsd.socket $(SYSTEMDDIR)
 
 install_hdrs: 
 	@echo '*** Installing Open-iSNS header files ***'
@@ -144,14 +146,18 @@ distclean::
 	rm -f config.h Makefile config.status config.log include/libisns/paths.h
 	rm -rf autom4te.cache
 
-$(filter-out solib-message.o, $(SOLIBOBJS)): $(patsubst solib-%.o,%.c,$@)
-	$(CC) $(CFLAGS) $(CPPFLAGS) -fPIC -c -o $@ $(patsubst solib-%.o,%.c,$@)
+%.o: %.c
+	@mkdir -p $(@D)
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c -o $@ $^
+
+solib-%.o: %.c
+	$(CC) $(CFLAGS) $(CPPFLAGS) -fPIC -c -o $@ $<
 
 message.o: message.c
-	$(CC) $(CFLAGS) $(CPPFLAGS) $(IQNFLAGS) -c -o $@ message.c
+	$(CC) $(CFLAGS) $(CPPFLAGS) $(IQNFLAGS) -c -o $@ $<
 
 solib-message.o: message.c
-	$(CC) $(CFLAGS) $(CPPFLAGS) $(IQNFLAGS) -fPIC -c -o $@ message.c
+	$(CC) $(CFLAGS) $(CPPFLAGS) $(IQNFLAGS) -fPIC -c -o $@ $<
 
 ifeq ($(BUILD_STATIC),1)
 $(LIB): $(LIBOBJS)
@@ -178,6 +184,7 @@ isnsadm: $(ADMOBJS) $(LIB) $(SOLIB)
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $(ADMOBJS) -L. -lisns -Wl,--as-needed $(SECLINK) $(SLPLINK)
 
 tests/%: tests/%.o $(LIB) $(SOLIB)
+	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $@.o -L. -lisns -Wl,--as-needed $(SECLINK) $(SLPLINK)
 
 bitvector: bitvector.c $(LIB) $(SOLIB)
