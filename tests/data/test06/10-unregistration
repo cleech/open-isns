@@ -21,11 +21,6 @@ Object:      index=13 type=<iSCSI Storage Node> state=limbo
   0020  string      : iSCSI name = "isns.client1"
   0024  uint32      : iSCSI node index = 13
 --------------
-Object:      index=18 type=<Portal> state=limbo
-  0010  ipaddr      : Portal IP address = 192.168.1.1
-  0011  uint32      : Portal TCP/UDP port = 860/tcp
-  0016  uint32      : Portal index = 18
---------------
 Object:      index=16 type=<Discovery Domain> state=mature
   0811  uint32      : DD ID = 1
   0812  string      : DD name = "isns.dd1"
@@ -35,3 +30,8 @@ Object:      index=16 type=<Discovery Domain> state=mature
   0816  uint32      : DD member portal index = 18
   0817  ipaddr      : DD member portal addr = 192.168.1.1
   0818  uint32      : DD member portal port = 860/tcp
+--------------
+Object:      index=18 type=<Portal> state=limbo
+  0010  ipaddr      : Portal IP address = 192.168.1.1
+  0011  uint32      : Portal TCP/UDP port = 860/tcp
+  0016  uint32      : Portal index = 18
