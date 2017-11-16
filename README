@@ -32,6 +32,7 @@ Thanks!
 Many thanks to Albert Pauw for his fearless testing of snapshots,
 and his copious feedback!
 
+
 What works, after a fashion:
 ----------------------------
 
@@ -61,6 +62,7 @@ What works, after a fashion:
 
  -	SCN, supported by the server and the discovery daemon
 
+
 What is still missing
 ---------------------
 
@@ -68,6 +70,7 @@ What is still missing
  -	DD Sets
  -	Various bits and pieces of the protocol
  -	FC support
+
 
 
 Building Open-iSNS
@@ -112,6 +115,16 @@ include file. With these in place, you can build the binaries and libraries:
 
 	make
 	make install
+
+Then, run "make clean" to clean up your binaries, or run "make distclean"
+to get back to a clean pre-configuration state.
+
+
+Testing
+-------
+
+See the README in the tests subdirectory for information on running
+the isnsd selftests.
 
 Getting started
 ---------------
