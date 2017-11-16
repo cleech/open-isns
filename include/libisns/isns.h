@@ -61,6 +61,7 @@ extern struct isns_service_ops	isns_callback_service_ops;
  * Output function
  */
 void			isns_print_stdout(const char *, ...);
+void			isns_print_stderr(const char *, ...);
 
 /*
  * Database events
