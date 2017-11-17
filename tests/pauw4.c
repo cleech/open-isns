@@ -61,6 +61,10 @@ main(int argc, char **argv)
 
 	clnt = isns_create_default_client(NULL);
 
+	/*
+	 * test that we can deregister for SCN events, even though
+	 * not registered
+	 */
 	reg = isns_simple_create(ISNS_SCN_DEREGISTER, clnt->ic_source, NULL);
 
 	/* Message attributes */
@@ -70,9 +74,16 @@ main(int argc, char **argv)
 	status = isns_client_call(clnt, &reg);
 	if (status != ISNS_SUCCESS)
 		isns_error("SCNDereg failed: %s\n", isns_strerror(status));
+	else
+		printf("Successfully deregistered for SCN events\n");
 	isns_simple_free(reg);
 
-
+	/*
+	 * test that we can deregister a device, even though not
+	 * registered -- note that the portal group object proceeds
+	 * the initiator (name) object in the operating attribute
+	 * list
+	 */
 	reg = isns_simple_create(ISNS_DEVICE_DEREGISTER, clnt->ic_source, NULL);
 
 	attrs = &reg->is_operating_attrs;
@@ -90,9 +101,15 @@ main(int argc, char **argv)
 	status = isns_client_call(clnt, &reg);
 	if (status != ISNS_SUCCESS)
 		isns_fatal("DevDereg failed: %s\n", isns_strerror(status));
+	else
+		printf("Successfully deregistered a device\n");
 	isns_simple_free(reg);
 
-	reg = isns_simple_create(ISNS_DEVICE_ATTRIBUTE_REGISTER, clnt->ic_source, NULL);
+	/*
+	 * test that we can register (w/replace) device attributes
+	 */
+	reg = isns_simple_create(ISNS_DEVICE_ATTRIBUTE_REGISTER,
+				 clnt->ic_source, NULL);
 	reg->is_replace = opt_replace;
 
 	attrs = &reg->is_operating_attrs;
@@ -118,8 +135,14 @@ main(int argc, char **argv)
 	status = isns_client_call(clnt, &reg);
 	if (status != ISNS_SUCCESS)
 		isns_fatal("DevAttrReg failed: %s\n", isns_strerror(status));
+	else
+		printf("Successfully registered device attributes\n");
 	isns_simple_free(reg);
 
+	/*
+	 * test that we can call DEVICE GET NEXT to get the next (only)
+	 * iscsi Storage Node
+	 */
 	reg = isns_simple_create(ISNS_DEVICE_GET_NEXT, clnt->ic_source, NULL);
 	attrs = &reg->is_message_attrs;
 	NIL(ISCSI_NAME);
@@ -131,6 +154,8 @@ main(int argc, char **argv)
 	status = isns_client_call(clnt, &reg);
 	if (status != ISNS_SUCCESS)
 		isns_fatal("DevGetNext failed: %s\n", isns_strerror(status));
+	else
+		printf("Successfully got next device node\n");
 	isns_simple_free(reg);
 
 	return 0;
