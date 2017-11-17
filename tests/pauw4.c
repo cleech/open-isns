@@ -125,7 +125,7 @@ main(int argc, char **argv)
 	NIL(ISCSI_NAME);
 
 	attrs = &reg->is_operating_attrs;
-	U32(ISCSI_NODE_TYPE,	ISNS_ISCSI_TARGET_MASK);
+	U32(ISCSI_NODE_TYPE,	ISNS_ISCSI_INITIATOR_MASK);
 	NIL(ISCSI_NODE_TYPE);
 
 	status = isns_client_call(clnt, &reg);
