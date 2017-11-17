@@ -277,7 +277,6 @@ isns_process_scn_deregistration(isns_server_t *srv, isns_simple_t *call, isns_si
 	 *
 	 * There are no Operating Attributes in the SCNDereg message.
 	 */
-
 	if (keys->ial_count != 1)
 		return ISNS_SCN_REGISTRATION_REJECTED;
 
@@ -288,9 +287,21 @@ isns_process_scn_deregistration(isns_server_t *srv, isns_simple_t *call, isns_si
 
 	/* Look up the storage node for this source. If it does
 	 * not exist, reject the message. */
+	/*
+	 * Look up the storage node for this source. If it does
+	 * not exist call this success.
+	 *
+	 * Implementor's comment: the specification is unclear
+	 * on how to handle the case where a SCN deregistration
+	 * is received when there are no registrations. It
+	 * seems like SUCCESS is better than INVALID_DEREGISTRATION
+	 */
 	node = isns_db_lookup(db, NULL, keys);
-	if (node == NULL)
+	if (node == NULL) {
+		*result = isns_simple_create(ISNS_SCN_DEREGISTER,
+					     srv->is_source, NULL);
 		return ISNS_SUCCESS;
+	}
 
 	/*
 	 * Policy: verify that the client is permitted
