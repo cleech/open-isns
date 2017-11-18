@@ -8,6 +8,7 @@
  */
 
 #include <string.h>
+#include <stdlib.h>
 #include "config.h"
 #include <libisns/isns.h>
 #include "security.h"
