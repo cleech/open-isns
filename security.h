@@ -7,7 +7,11 @@
 #ifndef ISNS_SECURITY_H
 #define ISNS_SECURITY_H
 
+#ifdef	WITH_SECURITY
 #include <openssl/evp.h>
+#else
+typedef void EVP_PKEY;
+#endif
 #include <libisns/buffer.h>
 #include <libisns/util.h>
 

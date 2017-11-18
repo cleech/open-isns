@@ -38,3 +38,8 @@ quick:
 	@for test in test*.pl; do \
 		perl $$test -q --fast; \
 	done
+
+tests-no-security:
+	@for test in test*.pl; do \
+		perl $$test -i -q; \
+	done

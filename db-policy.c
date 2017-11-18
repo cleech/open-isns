@@ -8,8 +8,10 @@
 #include <string.h>
 #include <unistd.h>
 #include "config.h"
+#ifdef	WITH_SECURITY
 #include <openssl/pem.h>
 #include <openssl/err.h>
+#endif
 #include <libisns/isns.h>
 #include "security.h"
 #include "objects.h"

@@ -1,0 +1,23 @@
+Dumping database contents
+Backend:     /tmp/isns-test/test06/server0/database
+Last EID:    2
+Last Index:  19
+--------------
+Object:      index=10 type=<iSCSI Storage Node> state=limbo
+  0020  string      : iSCSI name = "isns.client1"
+  0024  uint32      : iSCSI node index = 10
+--------------
+Object:      index=13 type=<Discovery Domain> state=mature
+  0811  uint32      : DD ID = 1
+  0812  string      : DD name = "isns.dd1"
+  081e  uint32      : DD features = <NIL>
+  0813  uint32      : DD member iSCSI index = 10
+  0814  string      : DD member iSCSI name = "isns.client1"
+  0816  uint32      : DD member portal index = 15
+  0817  ipaddr      : DD member portal addr = 192.168.1.1
+  0818  uint32      : DD member portal port = 860/tcp
+--------------
+Object:      index=15 type=<Portal> state=limbo
+  0010  ipaddr      : Portal IP address = 192.168.1.1
+  0011  uint32      : Portal TCP/UDP port = 860/tcp
+  0016  uint32      : Portal index = 15

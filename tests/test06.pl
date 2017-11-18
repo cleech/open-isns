@@ -15,7 +15,7 @@ $client = &create_client($server);
 &isns_start_server($server);
 
 # 1: Enroll the client
-&isns_enroll_client($client);
+&isns_enroll_client($client) if ($__isns_security);
 
 # 2: Register a simple initiator with one portal
 &isns_register_client($client, "initiator portal");

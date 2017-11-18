@@ -16,11 +16,11 @@ $client2 = &create_client($server, "127.1.0.2");
 
 &isns_start_server($server);
 
-# 1: Enroll the client1
-&isns_enroll_client($client1);
-
-# 2: Enroll the client1
-&isns_enroll_client($client2, "node-type=target");
+# Enroll the clients
+if ($__isns_security) {
+    &isns_enroll_client($client1);
+    &isns_enroll_client($client2, "node-type=target");
+}
 
 &isns_stage("registration", "Registering both clients");
 &__isns_register_client($client1, "initiator portal");
@@ -33,7 +33,8 @@ $client2 = &create_client($server, "127.1.0.2");
 &isns_query_objects($client2, "eid");
 
 # Register a DD linking the two nodes
-&isns_register_domain($client1, "member-name=isns.client1", "member-name=isns.client2");
+&isns_register_domain($client1, "member-name=isns.client1",
+		      "member-name=isns.client2");
 
 # Now the clients should see each other
 &isns_query_objects($client1, "eid");

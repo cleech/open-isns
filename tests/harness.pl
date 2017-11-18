@@ -374,6 +374,7 @@ sub isns_verify_db {
 	# doesn't, this means we're priming the test case.
 	# Just copy the dump file.
 	$data_file = "$__isns_test_data/$stage";
+	$data_file = "${data_file}-no-security"	unless ($__isns_security);
 	unless (-f $data_file) {
 		print "*** Saving database dump for stage $stage ***\n";
 		mkdir $__isns_test_data, 0755;
@@ -413,6 +414,7 @@ sub verify_response {
 	# doesn't, this means we're priming the test case.
 	# Just copy the dump file.
 	$data_file = "$__isns_test_data/$stage";
+	$data_file = "${data_file}-no-security"	unless ($__isns_security);
 	unless (-f $data_file) {
 		print "*** Saving data for stage $stage ***\n";
 		mkdir $__isns_test_data, 0755;

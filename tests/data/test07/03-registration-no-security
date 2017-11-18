@@ -1,0 +1,42 @@
+Dumping database contents
+Backend:     /tmp/isns-test/test07/server0/database
+Last EID:    3
+Last Index:  11
+--------------
+Object:      index=5 type=<Network Entity> state=mature
+  0001  string      : Entity identifier = "isns.entity.0002"
+  0002  uint32      : Entity protocol = iSCSI (2)
+  0006  uint32      : Registration Period = 7200
+  0004  uint64      : Timestamp = Fri Nov 17 17:46:57 2017
+  0007  uint32      : Entity index = 5
+--------------
+Object:      index=6 type=<iSCSI Storage Node> state=mature parent=5
+  0020  string      : iSCSI name = "isns.client1"
+  0021  uint32      : iSCSI node type = Initiator
+  0024  uint32      : iSCSI node index = 6
+--------------
+Object:      index=7 type=<Portal> state=mature parent=5
+  0010  ipaddr      : Portal IP address = 127.0.0.1
+  0011  uint32      : Portal TCP/UDP port = 860/tcp
+  0014  uint32      : ESI port = 65535/tcp
+  0013  uint32      : ESI interval = 5
+  0016  uint32      : Portal index = 7
+--------------
+Object:      index=8 type=<Portal> state=mature parent=5
+  0010  ipaddr      : Portal IP address = 127.0.0.1
+  0011  uint32      : Portal TCP/UDP port = 1/tcp
+  0016  uint32      : Portal index = 8
+--------------
+Object:      index=9 type=<iSCSI Portal Group> state=mature parent=5
+  0030  string      : Portal group name = "isns.client1"
+  0031  ipaddr      : Portal group address = 127.0.0.1
+  0032  uint32      : Portal group port = 860/tcp
+  0033  uint32      : Portal group tag = 1
+  0034  uint32      : Portal group index = 9
+--------------
+Object:      index=10 type=<iSCSI Portal Group> state=mature parent=5
+  0030  string      : Portal group name = "isns.client1"
+  0031  ipaddr      : Portal group address = 127.0.0.1
+  0032  uint32      : Portal group port = 1/tcp
+  0033  uint32      : Portal group tag = 1
+  0034  uint32      : Portal group index = 10

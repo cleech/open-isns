@@ -7,7 +7,7 @@ Object:      index=1 type=<Network Entity> state=mature
   0001  string      : Entity identifier = "troopa.nki.nl"
   0002  uint32      : Entity protocol = iSCSI (2)
   0006  uint32      : Registration Period = 7200
-  0004  uint64      : Timestamp = Fri Sep 21 09:37:10 2007
+  0004  uint64      : Timestamp = Fri Nov 17 18:03:04 2017
   0007  uint32      : Entity index = 1
 --------------
 Object:      index=2 type=<Portal> state=mature parent=1

@@ -15,7 +15,7 @@ $client = &create_client($server);
 
 &isns_start_server($server);
 
-&isns_enroll_client($client);
+&isns_enroll_client($client) if ($__isns_security);
 &isns_register_client($client, "initiator portal");
 
 # Restart the server, and make sure it still displays
