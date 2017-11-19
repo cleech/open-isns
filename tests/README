@@ -17,6 +17,9 @@ tests internally set the "insecure" option. You can of course run any
 of the tests in any order by manually calling them, i.e. running
 "perl testNN.pl".
 
+To run all of the tests when security is disabled, use the "-i"
+flag for each of the tests, or run "make tests-no-security".
+
 Options supported by the test scripts:
 -q/--quiet	quiet		only show test name and results
 -v/--verbose	verbose		show verbose test info and results
