@@ -100,7 +100,7 @@ enum {
  * There's no htonll yet
  */
 #ifndef htonll
-# ifdef __GLIBC__
+# if defined(__GLIBC__) || defined(__linux__)
 #  include <endian.h>
 #  include <byteswap.h>
 #  if __BYTE_ORDER == __BIG_ENDIAN
