@@ -1,3 +1,95 @@
+* Changes v0.98 to v0.99:
+
+Khem Raj (1):
+      util.h: endian.h is available on musl on linux
+
+Lee Duncan (9):
+      Export debugging print-to-stderr routine.
+      Add testing information to the README.
+      Fix error with type of node in GetNext test.
+      Cleanup: reformat and add some print statements.
+      Fix error with SCN Deregister when not registered.
+      Define 'free()' for isns_free()
+      Support building/testing for with-security=no
+      Added README info about testing without security.
+      Merge pull request #18 from kraj/kraj/musl-fix
+
+* Changes v0.97 to v0.98:
+
+Christian Seiler (1):
+      Add support for musl-libc (endian.h)
+
+Lee Duncan (7):
+      Merge pull request #10 from eroen/master
+      Merge pull request #11 from prometheanfire/prometheanfire-musl-fixes
+      Merge pull request #17 from FluffGlitter/srcdir_fixes
+      Merge pull request #13 from nacc/fix_test02
+      Merge pull request #16 from nacc/harness_changes
+      Merge pull request #15 from nacc/fix_tests
+      Merge pull request #14 from nacc/fix_test06
+
+Nishanth Aravamudan (5):
+      DD: handle Domain ID change on creation
+      tests/data/test06: sort database responses
+      tests/test06.pl: :iscsi suffix is not valid
+      tests: Sort database dump by index
+      tests/harness.pl: always treat __isns_bin as a delimiter-suffixed string
+
+Robert Beckett (2):
+      Makefile: Add support for initiating build from another directory
+      Makefile: Fix shared object dependency handling
+
+eroen (1):
+      Disable deprecated initializations for openssl-1.1.0
+
+
+* Changes v0.96 to v0.97:
+
+Christian Seiler (3):
+      Support OpenSSL 1.1
+      Support FreeBSD and GNU/kFreeBSD
+      Add support for GNU Hurd
+
+Lee Duncan (13):
+      Merge pull request #7 from chris-se/openssl11
+      Merge pull request #8 from chris-se/otheros
+      Ignore common build files
+      Fix RFC Reference and wording.
+      Adding TODO Items to README file.
+      Fix calls to err(): no newline needed.
+      Nit: fix "else" formatting.
+      Make function buf_fill static.
+      Add comment about possibly duplicate call.
+      Fix DD member doubling when restoring from DB.
+      Added more items to TODO list
+      Update to version 0.97
+      Reverting changes to libisns.vers.
+
+* Changes v0.95 to v0.96:
+
+Christian Seiler (8):
+      Add support for building a shared library
+      Build system: use LDFLAGS for building binaries
+      Fix trivial spelling mistakes in manpages
+      Fix trivial spelling mistake in isnsadm's help output
+      Fall back to port 3205 if isns is not in /etc/services
+      isnsdd: Use isnsdd.pid as default pid file
+      Make RUNDIR (/var/run) configurable
+      Warn if fallback to port 3205 is used
+
+Lee Duncan (7):
+      Install isns_config.5
+      Update GPL license information.
+      Merge pull request #2 from printesoi/fix-build-non-gcc
+      Merge pull request #4 from chris-se/shared-library
+      Merge pull request #6 from chris-se/rundir
+      Merge pull request #5 from chris-se/minor-fixes
+      Update to version 0.96
+
+Victor Dodon (1):
+      Fix build when the compiler is not gcc
+
+
 Under development:
 
 2007-09-27:
