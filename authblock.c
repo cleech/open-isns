@@ -20,12 +20,29 @@ int
 isns_authblock_decode(buf_t *bp, struct isns_authblk *auth)
 {
 	unsigned int	avail = buf_avail(bp);
+	uint32_t	tmp_32bit_val;
+	uint64_t	tmp_64bit_val;
 
-	if (!buf_get32(bp, &auth->iab_bsd)
-	 || !buf_get32(bp, &auth->iab_length)
-	 || !buf_get64(bp, &auth->iab_timestamp)
-	 || !buf_get32(bp, &auth->iab_spi_len))
+	/*
+	 * we cannot pass packed structure members from isns_authblk
+	 * to buf_getNN() or we will get an alignment error
+	 */
+
+	if (!buf_get32(bp, &tmp_32bit_val))
+		return 0;
+	auth->iab_bsd = tmp_32bit_val;
+
+	if (!buf_get32(bp, &tmp_32bit_val))
+		return 0;
+	auth->iab_length = tmp_32bit_val;
+
+	 if (!buf_get64(bp, &tmp_64bit_val))
 		 return 0;
+	 auth->iab_timestamp = tmp_64bit_val;
+
+	 if (!buf_get32(bp, &tmp_32bit_val))
+		 return 0;
+	 auth->iab_spi_len = tmp_32bit_val;
 
 	/* Make sure the length specified by the auth block
 	 * is reasonable. */
