@@ -123,8 +123,11 @@ isns_esi_transmit(void *ptr)
 
 			if (esp->esp_next_xmit <= now) {
 				if (esp->esp_retries == 0) {
+					char *ps = isns_portal_string(&esp->esp_dest);
+
 					isns_debug_esi("No ESI response from %s - dropping\n",
-							isns_portal_string(&esp->esp_dest));
+							ps);
+					free(ps);
 					isns_esi_drop_portal(esp, db, 1);
 					continue;
 				}
@@ -154,6 +157,7 @@ isns_esi_sendto(isns_esi_t *esi, isns_esi_portal_t *esp)
 	isns_attr_list_t attrs = ISNS_ATTR_LIST_INIT;
 	isns_socket_t	*sock;
 	isns_simple_t	*msg;
+	char		*ps = NULL;
 
 	/* For TCP portals, kill the TCP socket every time. */
 	if (esp->esp_dest.proto == IPPROTO_TCP)
@@ -185,9 +189,10 @@ isns_esi_sendto(isns_esi_t *esi, isns_esi_portal_t *esp)
 	if (msg == NULL)
 		return;
 
+	ps = isns_portal_string(&esp->esp_dest);
 	isns_debug_esi("*** Sending ESI message to %s (xid=0x%x); %u retries left\n",
-			isns_portal_string(&esp->esp_dest),
-			msg->is_xid, esp->esp_retries);
+			ps, msg->is_xid, esp->esp_retries);
+	free(ps);
 	isns_simple_transmit(esp->esp_socket, msg,
 			NULL, esp->esp_timeout - 1,
 			isns_process_esi_response);
@@ -241,6 +246,7 @@ isns_esi_update(isns_esi_t *esi)
 	ISNS_LIST_DECLARE(hold);
 	isns_esi_portal_t *esp;
 	unsigned int	i;
+	char		*ps = NULL;
 
 	isns_debug_esi("Updating ESI state for entity %u\n", entity->ie_index);
 
@@ -272,15 +278,19 @@ isns_esi_update(isns_esi_t *esi)
 			esp = isns_list_item(isns_esi_portal_t, esp_list, pos);
 
 			if (esp->esp_object == child) {
+				ps = isns_portal_string(&portal_info);
 				isns_debug_esi("Updating ESI state for %s\n",
-						isns_portal_string(&portal_info));
+						ps);
+				free(ps);
 				isns_list_del(&esp->esp_list);
 				goto update;
 			}
 		}
 
+		ps = isns_portal_string(&portal_info);
 		isns_debug_esi("Creating ESI state for %s\n",
-				isns_portal_string(&portal_info));
+				ps);
+		free(ps);
 		esp = isns_calloc(1, sizeof(*esp));
 		esp->esp_object = isns_object_get(child);
 		isns_list_init(&esp->esp_list);
@@ -368,8 +378,10 @@ __isns_esi_drop_object(isns_db_t *db, isns_object_t *obj, unsigned int dead)
 void
 isns_esi_drop_portal(isns_esi_portal_t *esp, isns_db_t *db, int dead)
 {
-	isns_debug_esi("ESI: dropping portal %s\n",
-			isns_portal_string(&esp->esp_portal));
+	char	*ps = isns_portal_string(&esp->esp_portal);
+
+	isns_debug_esi("ESI: dropping portal %s\n", ps);
+	free(ps);
 
 	isns_list_del(&esp->esp_list);
 	isns_esi_disconnect(esp);
@@ -472,6 +484,7 @@ isns_process_esi_response(uint32_t xid, int status, isns_simple_t *msg)
 	isns_portal_info_t	portal_info;
 	isns_esi_portal_t	*esp;
 	isns_esi_t		*esi;
+	char			*ps;
 
 	if (msg == NULL) {
 		isns_debug_esi("ESI call 0x%x timed out\n", xid);
@@ -498,13 +511,16 @@ isns_process_esi_response(uint32_t xid, int status, isns_simple_t *msg)
 	}
 
 	if (!isns_portal_equal(&esp->esp_portal, &portal_info)) {
+		ps = isns_portal_string(&portal_info);
 		isns_warning("Faked ESI response for portal %s\n",
-				isns_portal_string(&portal_info));
+				ps);
+		free(ps);
 		return;
 	}
 
-	isns_debug_esi("Good ESI response from %s\n",
-				isns_portal_string(&portal_info));
+	ps = isns_portal_string(&portal_info);
+	isns_debug_esi("Good ESI response from %s\n", ps);
+	free(ps);
 	isns_esi_restart(esp);
 
 	/* Refresh the entity's registration timestamp */

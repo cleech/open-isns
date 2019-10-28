@@ -3996,7 +3996,7 @@ _ACEOF
 esac
 
 if test "$GCC" = "yes"; then
-        CFLAGS="-Wall -fno-strict-aliasing $CFLAGS"
+        CFLAGS="-Wall -Werror $CFLAGS"
 	CPPFLAGS="$CPPFLAGS -D_GNU_SOURCE"
 fi
 

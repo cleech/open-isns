@@ -1239,7 +1239,7 @@ isns_dd_get_member_object(isns_db_t *db, const isns_attr_t *key1,
 	isns_object_template_t *tmpl = NULL;
 	isns_object_t	*obj;
 	isns_portal_info_t portal_info;
-	const char	*key_string = NULL;
+	char		*key_string = NULL;
 	uint32_t	key_index = 0;
 
 	switch (key1->ia_tag_id) {
@@ -1309,6 +1309,8 @@ isns_dd_get_member_object(isns_db_t *db, const isns_attr_t *key1,
 
 out:
 	isns_attr_list_destroy(&query);
+	if (key_string)
+		free(key_string);
 	return obj;
 
 }

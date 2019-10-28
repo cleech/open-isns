@@ -395,6 +395,7 @@ check_portal_registration(void *ptr)
 		isns_proxy_t	*proxy;
 		time_t		last_modified;
 		uint32_t	interval;
+		char		*ps;
 
 		if (!isns_object_get_uint32(obj, ISNS_TAG_ESI_INTERVAL, &interval))
 			continue;
@@ -410,10 +411,10 @@ check_portal_registration(void *ptr)
 				ISNS_TAG_PORTAL_TCP_UDP_PORT,
 				obj);
 
+		ps = isns_portal_string(&portal_info),
 		isns_notice("Portal %s did not receive ESIs within %u seconds - "
 			"server may have lost us.\n",
-			isns_portal_string(&portal_info),
-			now - last_modified);
+			ps, now - last_modified);
 
 		proxy = isns_proxy_by_entity(isns_object_get_entity(obj));
 		if (!proxy)
