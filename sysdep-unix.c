@@ -7,6 +7,7 @@
 #include <net/if.h>
 #include <sys/ioctl.h>
 #include <string.h>
+#include <stdlib.h>
 #include <unistd.h>
 #include <libisns/isns.h>
 #include <libisns/util.h>
@@ -92,6 +93,7 @@ isns_enumerate_portals(isns_portal_info_t *result, unsigned int max)
 		struct sockaddr_storage ifaddr;
 		isns_portal_info_t portal;
 		int		ifflags;
+		char		*ps;
 
 		memcpy(&ifr, ptr, sizeof(ifr));
 		ptr += sizeof(ifr);
@@ -114,9 +116,10 @@ isns_enumerate_portals(isns_portal_info_t *result, unsigned int max)
 		if (!isns_portal_from_sockaddr(&portal, &ifaddr))
 			continue;
 
+		ps = isns_portal_string(&portal);
 		isns_debug_socket("Got interface %u: %s %s\n",
-				nportals, ifr.ifr_name,
-				isns_portal_string(&portal));
+				nportals, ifr.ifr_name, ps);
+		free(ps);
 		if (nportals < max)
 			result[nportals++] = portal;
 	}
