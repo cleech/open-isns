@@ -12,6 +12,7 @@
 #ifdef	WITH_SECURITY
 #include <openssl/pem.h>
 #include <openssl/err.h>
+#include <openssl/evp.h>
 #endif
 #include <fcntl.h>
 #include <libisns/isns.h>
@@ -69,9 +70,7 @@ void BN_GENCB_free(BN_GENCB *cb)
 #endif
 
 
-#if OPENSSL_VERSION_NUMBER < 0x10100000L
 static int	isns_openssl_init = 0;
-#endif
 
 static int	isns_dsasig_verify(isns_security_t *ctx,
 				isns_principal_t *peer,
@@ -96,15 +95,17 @@ isns_create_dsa_context(void)
 {
 	isns_security_t	*ctx;
 
-#if OPENSSL_VERSION_NUMBER < 0x10100000L
 	if (!isns_openssl_init) {
 		ERR_load_crypto_strings();
+#if OPENSSL_API_COMPAT < 0x10100000L
 		OpenSSL_add_all_algorithms();
 		OpenSSL_add_all_ciphers();
 		OpenSSL_add_all_digests();
+#else
+		OPENSSL_init_crypto();
+#endif
 		isns_openssl_init = 1;
 	}
-#endif
 
 	ctx = isns_calloc(1, sizeof(*ctx));
 
