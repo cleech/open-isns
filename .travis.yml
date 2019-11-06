@@ -1,0 +1,27 @@
+language: c
+compiler: gcc
+os: linux
+dist: bionic
+env:
+  global:
+  - secure: eEFxlhEYdnDyBd0RqWnTYe0iwed3LcLC8ccfXRXghGbu3Qwft5H4XPCeFpbX6SDtgJTor3ZvNVl2gi5J9zbMUmZI8/+AIKxpq3ZPfDJ2lw8yaDw71Q0RxaDMdEHQNYVx6Aof3jSKxMPins11Poii2c18qCK8StmKlwNZmzeArmM=
+addons:
+  apt:
+    update: true
+    packages:
+    - openssl
+    - libssl-dev
+  coverity_scan:
+    project:
+      name: "cleech/open-isns"
+    notification_email: cleech@redhat.com
+    build_command_prepend: "(DEB_CFLAGS_APPEND=-Wno-error dpkg-buildflags --export=sh) > env.sh && source env.sh && ./configure --with-security"
+    build_command: "make"
+    branch_pattern: coverity_scan
+#before_install: echo -n | openssl s_client -connect scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
+script:
+- |
+  if [ "${COVERITY_SCAN_BRANCH}" != 1 ]; then
+    (eval $(DEB_CFLAGS_APPEND=-Wno-error dpkg-buildflags --export=sh) && ./configure --with-security)
+    make
+  fi
