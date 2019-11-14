@@ -1,0 +1,29 @@
+language: c
+compiler: gcc
+os: linux
+dist: bionic
+env:
+  global:
+  # This is an excrypted setting of COVERITY_SCAN_TOKEN=<token>
+  # Travis-CI has the private key to decrypt this and set the environment
+  # variable with the token needed for Coverity API access
+    secure: cX4eO7dUEYxUSnC/aZ7wWv5Y6ljKI/Bu5yEtW9/vxiEjqO4PcvcCTEno4XfDqZ7gG/eSAAI26//mintRUO/ugcpql4aEf5BmPND/wWPXtGeypAeDMIc9X+pv4txsUIMDSXHZYNj6Bn654h/HOvWqwhqSk0pWEtt4lwjNM2vIUi/d72QUZl5kgv9bVKwb0aO9uHYzC+9uTy9vSoJFIghI91KmSo2WEVk8ZNd3tB1+GMGBIYred16OtDee8NEmn1ESDeyxamWvLq/7nsqo+8v9I8X72acjMDU+oDt0zwz+78GpM3lbe/MKmmsqCRbFXMxH4zqdgg5o++WnFwDbvtZTjpozSa8MVGi5A8eGME12VO1bYGXxeUdSPbUMo0RjevDqGZX9V7q7SLeDOd4GQHLYs/t3qcYuPmTMHJEpMF37LKBXPvMnnROoCUYupA93FT9PWhikA1onSXE9sJQUB2bYsCbZgiPDgd0mf6LUej9geY/6FkjGofuavYrGggSoObxYd6OkGKQoflDz7wA910o+FXKLhcZr0pmXrY/FHGntNdRRY+yTbuUurRBmrsX91z+qnlisAmrHk86kXy7z3CkbPkKN1rYNKMgXnko6H3ucj4GsqgPYEKvspgOWQYeAfZLd/CnUlWQUVlsKBs770jyYIQTFfmNdYKg5i9Sh8HkCjaA=
+addons:
+  apt:
+    update: true
+    packages:
+    - openssl
+    - libssl-dev
+  coverity_scan:
+    project:
+      name: open-iscsi/open-isns
+    notification_email: LDuncan@suse.com
+    build_command_prepend: "(DEB_CFLAGS_APPEND=-Wno-error dpkg-buildflags --export=sh) > env.sh && source env.sh && ./configure --with-security"
+    build_command: "make"
+    branch_pattern: coverity_scan
+script:
+- |
+  if [ "${COVERITY_SCAN_BRANCH}" != 1 ]; then
+    (eval $(DEB_CFLAGS_APPEND=-Wno-error dpkg-buildflags --export=sh) && ./configure --with-security)
+    make
+  fi
