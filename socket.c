@@ -2221,6 +2221,9 @@ isns_get_address_list(const char *addrspec, const char *port,
 		copy = host = isns_strdup(addrspec);
 		if (*host == '[') {
 			hints.ai_flags |= AI_NUMERICHOST;
+			if (af_hint == AF_UNSPEC)
+				af_hint = AF_INET6;
+			host++;
 			if ((s = strchr(host, ']')) == NULL)
 				goto bad_address;
 
