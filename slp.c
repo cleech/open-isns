@@ -200,14 +200,14 @@ isns_slp_find(void)
 #else /* WITH_SLP */
 
 int
-isns_slp_register(const char *url)
+isns_slp_register(__attribute__((unused))const char *url)
 {
 	isns_error("SLP support disabled in this build\n");
 	return 0;
 }
 
 int
-isns_slp_unregister(const char *url)
+isns_slp_unregister(__attribute__((unused))const char *url)
 {
 	isns_error("SLP support disabled in this build\n");
 	return 0;

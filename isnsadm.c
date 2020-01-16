@@ -75,7 +75,7 @@ static char *		opt_key = NULL;
 static const char *	opt_servername = NULL;
 static struct sockaddr_storage opt_myaddr;
 
-static void	usage(int, const char *);
+static void	usage_and_exit(int, const char *);
 
 static int	register_objects(isns_client_t *, int, char **);
 static int	query_objects(isns_client_t *, int, char **);
@@ -120,8 +120,8 @@ main(int argc, char **argv)
 			break;
 
 		case 'h':
-			usage(0, NULL);
-			break;
+			usage_and_exit(0, NULL);
+			__builtin_unreachable();
 
 		case 'K':
 			opt_keyfile = optarg;
@@ -160,12 +160,13 @@ main(int argc, char **argv)
 		case DO_EDIT_POLICY:
 		case DO_DELETE_POLICY:
 			if (opt_action)
-				usage(1, "You cannot specify more than one mode\n");
+				usage_and_exit(1, "You cannot specify more than one mode\n");
 			opt_action = c;
 			break;
 
 		default:
-			usage(1, "Unknown option");
+			usage_and_exit(1, "Unknown option");
+			__builtin_unreachable();
 		}
 	}
 
@@ -181,14 +182,14 @@ main(int argc, char **argv)
 	isns_init_names();
 
 	if (!isns_config.ic_source_name)
-		usage(1, "Please specify an iSNS source name");
+		usage_and_exit(1, "Please specify an iSNS source name");
 	if (!isns_config.ic_server_name && opt_servername)
 		isns_config.ic_server_name = strdup(opt_servername);
 	if (!isns_config.ic_server_name && !opt_local)
-		usage(1, "Please specify an iSNS server name");
+		usage_and_exit(1, "Please specify an iSNS server name");
 
 	if (!opt_action)
-		usage(1, "Please specify an operating mode");
+		usage_and_exit(1, "Please specify an operating mode");
 
 	if (opt_control) {
 		if (!isns_config.ic_security)
@@ -274,8 +275,8 @@ main(int argc, char **argv)
 	return status != ISNS_SUCCESS;
 }
 
-void
-usage(int exval, const char *msg)
+static void
+usage_and_exit(int exval, const char *msg)
 {
 	if (msg)
 		fprintf(stderr, "Error: %s\n", msg);
@@ -328,7 +329,7 @@ parse_registration(char **argv, int argc, isns_object_list_t *objs, isns_object_
 	}
 
 	if (argc == 0)
-		usage(1, "Missing object list\n");
+		usage_and_exit(1, "Missing object list\n");
 
 	if (key_obj) {
 		//isns_object_list_append(objs, key_obj);
@@ -704,7 +705,7 @@ parse_list(int argc, char **argv, isns_object_template_t **type_p, isns_attr_lis
 	char	*type_name;
 
 	if (argc == 0)
-		usage(1, "Missing object type");
+		usage_and_exit(1, "Missing object type");
 
 	if (argc == 1 && !strcmp(argv[0], "help")) {
 		printf("Object query:\n"
@@ -1037,7 +1038,7 @@ enroll_client(isns_client_t *clnt, int argc, char **argv)
 	int		status;
 
 	if (argc == 0)
-		usage(1, "Missing client name");
+		usage_and_exit(1, "Missing client name");
 
 	client_name = *argv++; --argc;
 

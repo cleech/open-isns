@@ -154,6 +154,8 @@ isns_portal_from_sockaddr(isns_portal_info_t *portal,
 		break;
 
 	default:
+		isns_error("internal error: unknown address family (%d)\n",
+				addr->ss_family);
 		return 0;
 	}
 

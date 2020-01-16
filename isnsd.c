@@ -37,7 +37,7 @@ static char *		slp_url;
 
 static int		init_server(void);
 static void		run_server(isns_server_t *, isns_db_t *);
-static void		usage(int, const char *);
+static void		usage_and_exit(int, const char *);
 static void		cleanup(int);
 
 static struct option	options[] = {
@@ -91,7 +91,8 @@ main(int argc, char **argv)
 			break;
 
 		case 'h':
-			usage(0, NULL);
+			usage_and_exit(0, NULL);
+			__builtin_unreachable();
 
 		case 'V':
 			printf("Open-iSNS version %s\n"
@@ -100,12 +101,12 @@ main(int argc, char **argv)
 			return 0;
 
 		default:
-			usage(1, "Unknown option");
+			usage_and_exit(1, "Unknown option");
 		}
 	}
 
 	if (optind != argc)
-		usage(1, NULL);
+		usage_and_exit(1, NULL);
 
 	isns_read_config(opt_configfile);
 
@@ -120,7 +121,7 @@ main(int argc, char **argv)
 	isns_init_names();
 
 	if (!isns_config.ic_source_name)
-		usage(1, "Please specify an iSNS source name");
+		usage_and_exit(1, "Please specify an iSNS source name");
 
 	source = isns_source_create_iscsi(isns_config.ic_source_name);
 
@@ -156,7 +157,7 @@ main(int argc, char **argv)
 }
 
 void
-usage(int exval, const char *msg)
+usage_and_exit(int exval, const char *msg)
 {
 	if (msg)
 		fprintf(stderr, "Error: %s\n", msg);

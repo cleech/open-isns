@@ -134,13 +134,16 @@ parse_timeout(const char *arg)
 		case '\0':
 			ret += v;
 			break;
-		case 'd':
+		case 'd':		/* days */
 			v *= 24;
-		case 'h':
+			/* fallthru */
+		case 'h':		/* hours */
 			v *= 60;
-		case 'm':
+			/* fallthru */
+		case 'm':		/* minutes */
 			v *= 60;
-		case 's':
+			/* fallthru */
+		case 's':		/* seconds */
 			ret += v;
 			++s;
 			break;

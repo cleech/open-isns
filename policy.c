@@ -363,7 +363,7 @@ int
 isns_policy_validate_object_update(const isns_policy_t *policy,
 			const isns_source_t *source,
 			const isns_object_t *obj,
-			const isns_attr_list_t *attrs,
+			__attribute__((unused))const isns_attr_list_t *attrs,
 			unsigned int function)
 {
 	return __isns_policy_validate_object_access(policy, source,
@@ -380,7 +380,7 @@ isns_policy_validate_object_creation(const isns_policy_t *policy,
 			const isns_source_t *source,
 			isns_object_template_t *tmpl,
 			const isns_attr_list_t *keys,
-			const isns_attr_list_t *attrs,
+			__attribute__((unused))const isns_attr_list_t *attrs,
 			unsigned int function)
 {
 	const char	*name = NULL;

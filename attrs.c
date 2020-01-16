@@ -1131,25 +1131,29 @@ isns_portal_parse(isns_portal_info_t *portal,
  * Attribute type NIL
  */
 static int
-isns_attr_type_nil_encode(buf_t *bp, const isns_value_t *value)
+isns_attr_type_nil_encode(buf_t *bp,
+		__attribute__((unused))const isns_value_t *value)
 {
 	return buf_put32(bp, 0);
 }
 
 static int
-isns_attr_type_nil_decode(buf_t *bp, size_t len, isns_value_t *value)
+isns_attr_type_nil_decode(__attribute__((unused))buf_t *bp, size_t len,
+		__attribute__((unused))isns_value_t *value)
 {
 	return len == 0;
 }
 
 static void
-isns_attr_type_nil_print(const isns_value_t *value, char *buf, size_t size)
+isns_attr_type_nil_print(__attribute__((unused))const isns_value_t *value,
+		char *buf, size_t size)
 {
 	snprintf(buf, size, "<empty>");
 }
 
 static int
-isns_attr_type_nil_parse(isns_value_t *value, const char *string)
+isns_attr_type_nil_parse(__attribute__((unused))isns_value_t *value,
+		const char *string)
 {
 	if (string && *string)
 		return 0;

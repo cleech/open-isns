@@ -213,7 +213,7 @@ __isns_local_registry_entity_name(const char *owner)
  * list of attr=tag values.
  */
 static int
-__isns_local_registry_load_object(const char *line,
+__isns_local_registry_load_object(__attribute__((unused))const char *line,
 		int argc, char **argv, void *user_data)
 {
 	isns_attr_list_t attrs = ISNS_ATTR_LIST_INIT;
@@ -274,7 +274,9 @@ __isns_local_registry_load_object(const char *line,
  */
 static int
 __isns_local_registry_rewrite_object(const char *line,
-		int argc, char **argv, void *user_data)
+		__attribute__((unused))int argc,
+		__attribute__((unused))char **argv,
+		void *user_data)
 {
 	FILE	*ofp = user_data;
 

@@ -3996,7 +3996,7 @@ _ACEOF
 esac
 
 if test "$GCC" = "yes"; then
-        CFLAGS="-Wall -Werror $CFLAGS"
+        CFLAGS="-Wall -Werror -Wextra $CFLAGS"
 	CPPFLAGS="$CPPFLAGS -D_GNU_SOURCE"
 fi
 

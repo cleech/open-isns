@@ -873,7 +873,7 @@ isns_dd_parse_attrs(isns_dd_t *dd, isns_db_t *db,
 			if (next->ia_tag_id != ISNS_TAG_DD_MEMBER_PORTAL_TCP_UDP_PORT)
 				goto invalid;
 			i += 1;
-			/* fallthru to normal case */
+			/* fallthru */
 
 		case ISNS_TAG_DD_MEMBER_PORTAL_INDEX:
 		case ISNS_TAG_DD_MEMBER_ISCSI_INDEX:
@@ -1083,7 +1083,9 @@ isns_dd_add_members(isns_dd_t *dd, isns_db_t *db, isns_dd_t *new_dd)
  * Remove members from a DD
  */
 int
-isns_dd_remove_members(isns_dd_t *dd, isns_db_t *db, isns_dd_t *temp_dd)
+isns_dd_remove_members(isns_dd_t *dd,
+		__attribute__((unused))isns_db_t *db,
+		isns_dd_t *temp_dd)
 {
 	isns_dd_member_t *mp;
 
@@ -1107,7 +1109,8 @@ isns_dd_remove_members(isns_dd_t *dd, isns_db_t *db, isns_dd_t *temp_dd)
 }
 
 void
-isns_dd_store(isns_db_t *db, const isns_dd_t *dd, int rewrite)
+isns_dd_store(__attribute__((unused))isns_db_t *db,
+		const isns_dd_t *dd, int rewrite)
 {
 	isns_object_t	*obj = dd->dd_object;
 	isns_dd_member_t *member;

@@ -316,7 +316,7 @@ isns_db_get_next(isns_db_t *db,
 		isns_object_template_t *tmpl,
 		const isns_attr_list_t *current,
 		const isns_attr_list_t *scope,
-		const isns_source_t *source)
+		__attribute__((unused))const isns_source_t *source)
 {
 	return __isns_db_get_next(db->id_objects,
 			tmpl, current, scope);
@@ -326,8 +326,8 @@ isns_db_get_next(isns_db_t *db,
  * Get the search key tags
  */
 static int
-isns_db_get_key_tags(const isns_attr_list_t *keys,
-		uint32_t *tags, unsigned int max_tags)
+isns_db_get_key_tags(const isns_attr_list_t *keys, uint32_t *tags,
+		__attribute__((unused))unsigned int max_tags)
 {
 	unsigned int	i;
 
@@ -759,7 +759,7 @@ isns_db_expire(isns_db_t *db)
 		}
 
 		stamp += period;
-		if (stamp <= now) {
+		if ((time_t)stamp <= now) {
 			/* removing the object will move one
 			 * object from the tail to the free
 			 * slot in the list. So don't increment
@@ -770,7 +770,7 @@ isns_db_expire(isns_db_t *db)
 		} else {
 			isns_debug_state("Entity %u will expire in %u sec\n",
 					obj->ie_index, (int) (stamp - now));
-			if (stamp < next_timeout)
+			if ((time_t)stamp < next_timeout)
 				next_timeout = stamp;
 		}
 

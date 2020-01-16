@@ -48,52 +48,48 @@ static struct isns_tag_prefix all_prefixes[__ISNS_OBJECT_TYPE_MAX] = {
 };
 
 static struct tag_name	all_attrs[] = {
-{ "id",			ISNS_TAG_ENTITY_IDENTIFIER,
-			.alias = { "eid", },
-},
-{ "prot",		ISNS_TAG_ENTITY_PROTOCOL },
-{ "idx",		ISNS_TAG_ENTITY_INDEX },
+{ .name = "id", .tag = ISNS_TAG_ENTITY_IDENTIFIER, .alias = { "eid", }, },
+{ .name = "prot",		.tag = ISNS_TAG_ENTITY_PROTOCOL },
+{ .name = "idx",		.tag = ISNS_TAG_ENTITY_INDEX },
 
-{ "name",		ISNS_TAG_ISCSI_NAME },
-{ "node-type",		ISNS_TAG_ISCSI_NODE_TYPE },
-{ "alias",		ISNS_TAG_ISCSI_ALIAS },
-{ "authmethod",		ISNS_TAG_ISCSI_AUTHMETHOD },
-{ "idx",		ISNS_TAG_ISCSI_NODE_INDEX },
+{ .name = "name",		.tag = ISNS_TAG_ISCSI_NAME },
+{ .name = "node-type",		.tag = ISNS_TAG_ISCSI_NODE_TYPE },
+{ .name = "alias",		.tag = ISNS_TAG_ISCSI_ALIAS },
+{ .name = "authmethod",		.tag = ISNS_TAG_ISCSI_AUTHMETHOD },
+{ .name = "idx",		.tag = ISNS_TAG_ISCSI_NODE_INDEX },
 
-{ "addr",		ISNS_TAG_PORTAL_IP_ADDRESS },
-{ "port",		ISNS_TAG_PORTAL_TCP_UDP_PORT },
-{ "name",		ISNS_TAG_PORTAL_SYMBOLIC_NAME },
-{ "esi-port",		ISNS_TAG_ESI_PORT },
-{ "esi-interval",	ISNS_TAG_ESI_INTERVAL },
-{ "scn-port",		ISNS_TAG_SCN_PORT },
-{ "idx",		ISNS_TAG_PORTAL_INDEX },
+{ .name = "addr",		.tag = ISNS_TAG_PORTAL_IP_ADDRESS },
+{ .name = "port",		.tag = ISNS_TAG_PORTAL_TCP_UDP_PORT },
+{ .name = "name",		.tag = ISNS_TAG_PORTAL_SYMBOLIC_NAME },
+{ .name = "esi-port",		.tag = ISNS_TAG_ESI_PORT },
+{ .name = "esi-interval",	.tag = ISNS_TAG_ESI_INTERVAL },
+{ .name = "scn-port",		.tag = ISNS_TAG_SCN_PORT },
+{ .name = "idx",		.tag = ISNS_TAG_PORTAL_INDEX },
 
-{ "name",		ISNS_TAG_PG_ISCSI_NAME },
-{ "addr",		ISNS_TAG_PG_PORTAL_IP_ADDR },
-{ "port",		ISNS_TAG_PG_PORTAL_TCP_UDP_PORT },
-{ "tag",		ISNS_TAG_PG_TAG },
-{ "pgt",		ISNS_TAG_PG_TAG },
-{ "idx",		ISNS_TAG_PG_INDEX },
+{ .name = "name",		.tag = ISNS_TAG_PG_ISCSI_NAME },
+{ .name = "addr",		.tag = ISNS_TAG_PG_PORTAL_IP_ADDR },
+{ .name = "port",		.tag = ISNS_TAG_PG_PORTAL_TCP_UDP_PORT },
+{ .name = "tag",		.tag = ISNS_TAG_PG_TAG },
+{ .name = "pgt",		.tag = ISNS_TAG_PG_TAG },
+{ .name = "idx",		.tag = ISNS_TAG_PG_INDEX },
 
-{ "id",			ISNS_TAG_DD_ID },
-{ "name",		ISNS_TAG_DD_SYMBOLIC_NAME },
-{ "member-name",	ISNS_TAG_DD_MEMBER_ISCSI_NAME },
-{ "member-iscsi-idx",	ISNS_TAG_DD_MEMBER_ISCSI_INDEX },
-{ "member-fc-name",	ISNS_TAG_DD_MEMBER_FC_PORT_NAME },
-{ "member-portal-idx",	ISNS_TAG_DD_MEMBER_PORTAL_INDEX },
-{ "member-addr",	ISNS_TAG_DD_MEMBER_PORTAL_IP_ADDR  },
-{ "member-port",	ISNS_TAG_DD_MEMBER_PORTAL_TCP_UDP_PORT  },
-{ "features",		ISNS_TAG_DD_FEATURES },
+{ .name = "id",			.tag = ISNS_TAG_DD_ID },
+{ .name = "name",		.tag = ISNS_TAG_DD_SYMBOLIC_NAME },
+{ .name = "member-name",	.tag = ISNS_TAG_DD_MEMBER_ISCSI_NAME },
+{ .name = "member-iscsi-idx",	.tag = ISNS_TAG_DD_MEMBER_ISCSI_INDEX },
+{ .name = "member-fc-name",	.tag = ISNS_TAG_DD_MEMBER_FC_PORT_NAME },
+{ .name = "member-portal-idx",	.tag = ISNS_TAG_DD_MEMBER_PORTAL_INDEX },
+{ .name = "member-addr",	.tag = ISNS_TAG_DD_MEMBER_PORTAL_IP_ADDR  },
+{ .name = "member-port",	.tag = ISNS_TAG_DD_MEMBER_PORTAL_TCP_UDP_PORT  },
+{ .name = "features",		.tag = ISNS_TAG_DD_FEATURES },
 
-{ "name",		OPENISNS_TAG_POLICY_SPI,
-			.alias = { "spi" },
-},
-{ "key",		OPENISNS_TAG_POLICY_KEY },
-{ "entity",		OPENISNS_TAG_POLICY_ENTITY },
-{ "object-type",	OPENISNS_TAG_POLICY_OBJECT_TYPE },
-{ "node-type",		OPENISNS_TAG_POLICY_NODE_TYPE },
-{ "node-name",		OPENISNS_TAG_POLICY_NODE_NAME },
-{ "functions",		OPENISNS_TAG_POLICY_FUNCTIONS },
+{ .name = "name",		.tag = OPENISNS_TAG_POLICY_SPI, .alias = { "spi" }, },
+{ .name = "key",		.tag = OPENISNS_TAG_POLICY_KEY },
+{ .name = "entity",		.tag = OPENISNS_TAG_POLICY_ENTITY },
+{ .name = "object-type",	.tag = OPENISNS_TAG_POLICY_OBJECT_TYPE },
+{ .name = "node-type",		.tag = OPENISNS_TAG_POLICY_NODE_TYPE },
+{ .name = "node-name",		.tag = OPENISNS_TAG_POLICY_NODE_NAME },
+{ .name = "functions",		.tag = OPENISNS_TAG_POLICY_FUNCTIONS },
 
 { NULL }
 };
@@ -274,7 +270,7 @@ parse_one_attr(const char *name, const char *value,
 		return 0;
 
 	/* Special handling for key objects */
-	if (tag == OPENISNS_TAG_POLICY_KEY) {
+	if (tag == (uint32_t)OPENISNS_TAG_POLICY_KEY) {
 		if (!value || !strcasecmp(value, "gen")) {
 			if (st->generate_key == NULL) {
 				isns_error("Key generation not supported in this context\n");
@@ -318,7 +314,8 @@ isns_attr_list_parser_init(struct isns_attr_list_parser *st,
 }
 
 int
-isns_attr_list_split(char *line, char **argv, unsigned int argc_max)
+isns_attr_list_split(char *line, char **argv,
+		__attribute__((unused))unsigned int argc_max)
 {
 	char		*src = line;
 	unsigned int	argc = 0, quoted = 0;
@@ -487,7 +484,7 @@ isns_attr_list_parser_help(struct isns_attr_list_parser *st)
 		printf(")");
 
 		help = NULL;
-		if (t->tag == OPENISNS_TAG_POLICY_KEY) {
+		if (t->tag == (uint32_t)OPENISNS_TAG_POLICY_KEY) {
 			help = "name of key file, or \"gen\" for key generation";
 		} else
 		if (tag_type->it_help)

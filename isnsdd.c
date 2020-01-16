@@ -133,6 +133,7 @@ main(int argc, char **argv)
 
 		case 'h':
 			usage(0, NULL);
+			__builtin_unreachable();
 
 		case 'r':
 			if (!strcasecmp(optarg, "initiator"))
@@ -243,13 +244,13 @@ install_sighandler(int signo, void (*func)(int))
 }
 
 void
-sig_reread(int sig)
+sig_reread(__attribute__((unused))int sig)
 {
 	should_reexport = 1;
 }
 
 void
-sig_cleanup(int sig)
+sig_cleanup(__attribute__((unused))int sig)
 {
 	isns_remove_pidfile(isns_config.ic_pidfile);
 	exit(1);
@@ -381,7 +382,7 @@ re_register:
  * Check if all portals have seen ESI messages from the server
  */
 static void
-check_portal_registration(void *ptr)
+check_portal_registration(__attribute__((unused))void *ptr)
 {
 	isns_object_list_t bad_portals = ISNS_OBJECT_LIST_INIT;
 	unsigned int	i, need_reregister = 0, good_portals = 0;
@@ -975,7 +976,8 @@ query_visible(void)
  * Invoke the registered callout program
  */
 static void
-callout(const char *how, isns_object_t *obj, unsigned int bitmap)
+callout(const char *how, isns_object_t *obj,
+	__attribute__((unused))unsigned int bitmap)
 {
 	char	*argv[128];
 	int	fargc, argc = 0;
@@ -1012,7 +1014,8 @@ callout(const char *how, isns_object_t *obj, unsigned int bitmap)
  * This is called when we receive a State Change Notification
  */
 static void
-scn_callback(isns_db_t *db, uint32_t bitmap,
+scn_callback(__attribute__((unused))isns_db_t *db,
+		uint32_t bitmap,
 		isns_object_template_t *node_type,
 		const char *node_name,
 		const char *dst_name)

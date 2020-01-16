@@ -161,7 +161,7 @@ callback:
  */
 int
 isns_simple_transmit(isns_socket_t *sock, isns_simple_t *call,
-			const isns_portal_info_t *dest,
+			__attribute__((unused))const isns_portal_info_t *dest,
 			unsigned int timeout,
 			isns_simple_callback_fn_t *user_callback)
 {

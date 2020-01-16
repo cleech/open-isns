@@ -395,7 +395,8 @@ isns_scn_setup(isns_scn_t *scn, isns_object_t *node)
  * if it doesn't, then create one.
  */
 static isns_scn_t *
-isns_scn_create_scn(isns_object_t *node, uint32_t bitmap, isns_db_t *db)
+isns_scn_create_scn(isns_object_t *node, uint32_t bitmap,
+		__attribute__((unused))isns_db_t *db)
 {
 	isns_scn_t	*scn;
 
@@ -516,7 +517,7 @@ isns_create_timestamp_attr(void)
  * information is included for all management SCNs.
  */
 void
-isns_scn_callback(const isns_db_event_t *ev, void *ptr)
+isns_scn_callback(const isns_db_event_t *ev, __attribute__((unused))void *ptr)
 {
 	isns_object_t	*obj = ev->ie_object;
 	isns_scn_t	*scn, **pos;
@@ -751,7 +752,9 @@ again:
  * comes in, or when the message timed out.
  */
 static void
-isns_process_scn_response(uint32_t xid, int status, isns_simple_t *msg)
+isns_process_scn_response(uint32_t xid,
+		__attribute__((unused))int status,
+		isns_simple_t *msg)
 {
 	isns_scn_t	*scn;
 

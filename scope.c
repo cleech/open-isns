@@ -440,9 +440,9 @@ isns_scope_gang_lookup(isns_scope_t *scope,
  */
 void
 isns_scope_get_related(isns_scope_t *scope,
-				const isns_object_t *origin,
-				unsigned int type_mask,
-				isns_object_list_t *result)
+			const isns_object_t *origin,
+			__attribute__((unused))unsigned int type_mask,
+			isns_object_list_t *result)
 {
 	isns_object_template_t *tmpl = origin->ie_template;
 	isns_object_list_t	nodes_result = ISNS_OBJECT_LIST_INIT;

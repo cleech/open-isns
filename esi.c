@@ -89,7 +89,7 @@ isns_esi_init(isns_server_t *srv)
  * Timer callback to send out ESI messages.
  */
 void
-isns_esi_transmit(void *ptr)
+isns_esi_transmit(__attribute__((unused))void *ptr)
 {
 	isns_db_t	*db = isns_esi_server->is_db;
 	isns_list_t	*esi_pos, *esi_next;
@@ -479,7 +479,9 @@ isns_process_esi(isns_server_t *srv, isns_simple_t *call, isns_simple_t **reply)
 }
 
 void
-isns_process_esi_response(uint32_t xid, int status, isns_simple_t *msg)
+isns_process_esi_response(uint32_t xid,
+		__attribute__((unused))int status,
+		isns_simple_t *msg)
 {
 	isns_portal_info_t	portal_info;
 	isns_esi_portal_t	*esp;
@@ -558,7 +560,8 @@ isns_esi_register(isns_object_t *obj)
  * We use this to keep track of ESI portals and such.
  */
 void
-isns_esi_callback(const isns_db_event_t *ev, void *ptr)
+isns_esi_callback(const isns_db_event_t *ev,
+		__attribute__((unused))void *ptr)
 {
 	isns_object_t	*obj, *entity;
 	isns_esi_t	*esi;

@@ -155,7 +155,7 @@ isns_dsasig_report_errors(const char *msg, isns_print_fn_t *fn)
 }
 
 int
-isns_dsasig_sign(isns_security_t *ctx,
+isns_dsasig_sign(__attribute__((unused))isns_security_t *ctx,
 			isns_principal_t *peer,
 			buf_t *pdu,
 			struct isns_authblk *blk)
@@ -176,7 +176,7 @@ isns_dsasig_sign(isns_security_t *ctx,
 			peer->is_name);
 		return 0;
 	}
-	if (EVP_PKEY_size(pkey) > sizeof(signature)) {
+	if (EVP_PKEY_size(pkey) > (int)sizeof(signature)) {
 		isns_error("isns_dsasig_sign: signature buffer too small\n");
 		return 0;
 	}
@@ -208,7 +208,7 @@ isns_dsasig_sign(isns_security_t *ctx,
 }
 
 int
-isns_dsasig_verify(isns_security_t *ctx,
+isns_dsasig_verify(__attribute__((unused))isns_security_t *ctx,
 			isns_principal_t *peer,
 			buf_t *pdu,
 			const struct isns_authblk *blk)
@@ -250,7 +250,8 @@ isns_dsasig_verify(isns_security_t *ctx,
 }
 
 EVP_PKEY *
-isns_dsasig_load_private_pem(isns_security_t *ctx, const char *filename)
+isns_dsasig_load_private_pem(__attribute__((unused))isns_security_t *ctx,
+		const char *filename)
 {
 	EVP_PKEY	*pkey;
 	FILE		*fp;
@@ -267,7 +268,8 @@ isns_dsasig_load_private_pem(isns_security_t *ctx, const char *filename)
 }
 
 EVP_PKEY *
-isns_dsasig_load_public_pem(isns_security_t *ctx, const char *filename)
+isns_dsasig_load_public_pem(__attribute__((unused))isns_security_t *ctx,
+		const char *filename)
 {
 	EVP_PKEY	*pkey;
 	FILE		*fp;
@@ -429,8 +431,10 @@ isns_dsa_load_params(const char *filename)
 	return dsa;
 }
 
-static void
-isns_dsa_param_gen_callback(int stage, int index, void *dummy)
+static int
+isns_dsa_param_gen_callback(int stage,
+		__attribute__((unused))int index,
+		__attribute__((unused))void *dummy)
 {
 	if (stage == 0)
 		write(1, "+", 1);
@@ -438,6 +442,7 @@ isns_dsa_param_gen_callback(int stage, int index, void *dummy)
 		write(1, ".", 1);
 	else if (stage == 2)
 		write(1, "/", 1);
+	return 0;
 }
 
 int

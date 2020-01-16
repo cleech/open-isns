@@ -325,7 +325,7 @@ __revert_fqdn(const char *prefix, const char *__fqdn, const char *suffix)
 		if (*comp == '\0')
 			continue;
 		comp_len = strlen(comp);
-		if (pos + comp_len + 2 > sizeof(namebuf)) {
+		if (pos + comp_len + 2 > (int)sizeof(namebuf)) {
 			isns_error("%s: FQDN too long\n", __FUNCTION__);
 			goto out;
 		}
@@ -341,7 +341,7 @@ __revert_fqdn(const char *prefix, const char *__fqdn, const char *suffix)
 	if (suffix) {
 		int	sfx_len = strlen(suffix);
 
-		if (pos + sfx_len + 2 > sizeof(namebuf)) {
+		if (pos + sfx_len + 2 > (int)sizeof(namebuf)) {
 			isns_error("%s: name too long\n", __FUNCTION__);
 			goto out;
 		}

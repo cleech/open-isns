@@ -26,7 +26,9 @@
 #include "security.h"
 #include <libisns/util.h>
 
+#ifndef	SOCK_DEBUG_VERBOSE
 #define SOCK_DEBUG_VERBOSE	0
+#endif
 
 #ifndef AI_ADDRCONFIG
 # define AI_ADDRCONFIG		0
@@ -307,8 +309,7 @@ isns_pdu_authenticate(isns_security_t *sec,
 	if (msg->imp_chain == NULL) {
 		msg->imp_security = peer;
 		peer->is_users++;
-	} else
-	if (msg->imp_security != peer) {
+	} else if (msg->imp_security != peer) {
 		goto failed;
 	}
 
@@ -564,7 +565,7 @@ isns_create_systemd_socket(int idx)
 	if (sscanf(env, "%u", &fds) != 1)
 		return NULL;
 
-	if (idx >= fds)
+	if ((unsigned)idx >= fds)
 		return NULL;
 
 	return __isns_create_socket_from_fd(idx + 3, SOCK_STREAM);
@@ -668,6 +669,7 @@ isns_net_stream_error(isns_socket_t *sock, int err_code)
 
 		/* fallthrough to disconnect */
 		timeo = isns_config.ic_network.reconnect_timeout;
+		/* fallthru */
 
 	case ETIMEDOUT:
 		/* Disconnect and try to reconnect */
@@ -1097,8 +1099,7 @@ isns_sockaddr_select(struct __isns_socket_addr *info,
 				 * destination is not a private network,
 				 * prefer non-private source. */
 				good = ai;
-			} else
-			if (ai->ai_family == AF_INET6) {
+			} else if (ai->ai_family == AF_INET6) {
 				/* Possible improvement: prefer IPv6 addr
 				 * with same address scope (local, global)
 				 */
@@ -1153,8 +1154,7 @@ isns_net_stream_reconnect(isns_socket_t *sock)
 	if (connect(sock->is_desc, addr, sock->is_dst.addrlen) >= 0) {
 		sock->is_state = ISNS_SOCK_IDLE;
 		sock->is_poll_mask |= POLLIN;
-	} else 
-	if (errno == EINTR || errno == EINPROGRESS) {
+	} else if (errno == EINTR || errno == EINPROGRESS) {
 		sock->is_state = ISNS_SOCK_CONNECTING;
 		isns_net_set_timeout(sock,
 				isns_net_stream_reconnect,
@@ -1566,7 +1566,7 @@ isns_socket_open(isns_socket_t *sock)
 				isns_warning("setsockopt(IPV6_V6ONLY, false) failed: %m");
 			}
 #endif
-			/* no break, fall through */
+			/* fallthru */
 		case AF_INET:
 			if (isns_addr_get_port(src_addr) == 0) {
 				if (!__isns_socket_bind_random(fd, src_addr, src_len))
@@ -1645,6 +1645,10 @@ isns_socket_release(isns_socket_t *sock)
  * Display a socket
  */
 #if SOCK_DEBUG_VERBOSE > 0
+
+static long
+__timeout_millisec(const struct timeval *now, const struct timeval *expires);
+
 static const char *
 isns_socket_state_name(int state)
 {
@@ -1756,7 +1760,7 @@ out:
 }
 
 static void
-isns_net_timeout(isns_socket_t *sock, isns_message_t *msg)
+isns_net_timeout(isns_message_t *msg)
 {
 	if (msg->im_callback)
 		msg->im_callback(msg, NULL);
@@ -1886,7 +1890,7 @@ again:
 					return NULL;
 				}
 
-				isns_net_timeout(sock, msg);
+				isns_net_timeout(msg);
 				continue;
 			}
 
@@ -2297,7 +2301,7 @@ isns_get_address(struct sockaddr_storage *result,
 		return -1;
 
 	alen = ai->ai_addrlen;
-	if (alen > sizeof(*result))
+	if (alen > (int)sizeof(*result))
 		return -1;
 	memcpy(result, ai->ai_addr, alen);
 	release_addrinfo(ai);
@@ -2423,7 +2427,7 @@ isns_socket_find_server(const isns_portal_info_t *portal)
 
 		if (!sock->is_client
 		 && sock->is_type == sock_type
-		 && sock->is_dst.addrlen == addr_len
+		 && sock->is_dst.addrlen == (unsigned)addr_len
 		 && !memcmp(&sock->is_dst.addr, &bound_addr, addr_len)) {
 			sock->is_users++;
 			return sock;
@@ -2447,8 +2451,12 @@ isns_addr_get_port(const struct sockaddr *addr)
 	case AF_INET6:
 		six = (const struct sockaddr_in6 *) addr;
 		return ntohs(six->sin6_port);
+
+	default:
+		isns_error("internal error: unknown address family (%d)\n",
+				addr->sa_family);
+		return -1;
 	}
-	return 0;
 }
 
 void
@@ -2466,6 +2474,11 @@ isns_addr_set_port(struct sockaddr *addr, unsigned int port)
 	case AF_INET6:
 		six = (struct sockaddr_in6 *) addr;
 		six->sin6_port = htons(port);
+		break;
+
+	default:
+		isns_error("internal error: unknown address family (%d)\n",
+				addr->sa_family);
 		break;
 	}
 }

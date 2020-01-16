@@ -63,14 +63,18 @@ isns_server_set_scn_callback(isns_server_t *srv, isns_scn_callback_fn_t *func)
  * the DD information)
  */
 static int
-isns_begin_write_operation(isns_server_t *srv, isns_simple_t *msg, int *status)
+isns_begin_write_operation(isns_server_t *srv,
+		__attribute__((unused))isns_simple_t *msg,
+		__attribute__((unused))int *status)
 {
 	isns_db_begin_transaction(srv->is_db);
 	return 1;
 }
 
 static void
-isns_end_write_operation(isns_server_t *srv, isns_simple_t *msg, int *status)
+isns_end_write_operation(isns_server_t *srv,
+		__attribute__((unused))isns_simple_t *msg,
+		int *status)
 {
 	if (*status == ISNS_SUCCESS)
 		isns_db_commit(srv->is_db);
@@ -79,13 +83,17 @@ isns_end_write_operation(isns_server_t *srv, isns_simple_t *msg, int *status)
 }
 
 static inline int
-isns_begin_read_operation(isns_server_t *srv, isns_simple_t *msg, int *status)
+isns_begin_read_operation(__attribute__((unused))isns_server_t *srv,
+		__attribute__((unused))isns_simple_t *msg,
+		__attribute__((unused))int *status)
 {
 	return 1;
 }
 
 static void
-isns_end_read_operation(isns_server_t *srv, isns_simple_t *msg, int *status)
+isns_end_read_operation(__attribute__((unused))isns_server_t *srv,
+		__attribute__((unused))isns_simple_t *msg,
+		__attribute__((unused))int *status)
 {
 }
 
@@ -231,7 +239,9 @@ err_unauthorized:
 }
 
 int
-isns_not_supported(isns_server_t *srv, isns_simple_t *call, isns_simple_t **replyp)
+isns_not_supported(__attribute__((unused))isns_server_t *srv,
+		__attribute__((unused))isns_simple_t *call,
+		__attribute__((unused))isns_simple_t **replyp)
 {
 	return ISNS_MESSAGE_NOT_SUPPORTED;
 }

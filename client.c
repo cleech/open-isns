@@ -55,7 +55,7 @@ isns_create_client(isns_security_t *ctx, const char *source_name)
 	sock = isns_create_bound_client_socket(
 			isns_config.ic_bind_address,
 			server_name,
-			"isns", 0, SOCK_STREAM);
+			"isns", AF_UNSPEC, SOCK_STREAM);
 	if (sock == NULL) {
 		isns_error("Unable to create socket for host \"%s\"\n",
 			isns_config.ic_server_name);

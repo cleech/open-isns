@@ -244,7 +244,8 @@ isns_tag_type_by_id(uint32_t id)
  * Specific validators/pretty printers
  */
 int
-isns_entity_protocol_validate(const isns_value_t *value, const isns_policy_t *policy)
+isns_entity_protocol_validate(const isns_value_t *value,
+		__attribute__((unused))const isns_policy_t *policy)
 {
 	enum isns_entity_protocol protocol = value->iv_uint32;
 
@@ -355,7 +356,8 @@ isns_tcpudp_port_help(void)
 }
 
 int
-isns_timestamp_parse(isns_value_t *value, const char *string)
+isns_timestamp_parse(__attribute__((unused))isns_value_t *value,
+		__attribute__((unused))const char *string)
 {
 	isns_error("Timestamp parsing not implemented\n");
 	return 0;
