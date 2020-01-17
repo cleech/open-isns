@@ -326,20 +326,27 @@ isns_bitvector_is_empty(const isns_bitvector_t *bv)
 
 	wp = bv->ib_words;
 	end = wp + bv->ib_count;
+	isns_debug_general("isns_bitvector_is_empty: set wp=%p, end=%p (count=%d)\n",
+			wp, end, bv->ib_count);
 	while (wp < end) {
 		unsigned int	rlen;
+
+		isns_debug_general("isns_bitvector_is_empty: now wp=%p, end=%p (diff=%d, rlen=%d)\n",
+				wp, end, (end-wp), wp[1]);
 
 		rlen = wp[1];
 		wp += 2;
 
+		isns_debug_general("isns_bitvector_is_empty: scanning %d bytes for non-zero ...\n",
+				rlen);
 		while (rlen--) {
 			if (*wp++)
-				return 0;
+				return 0;	/* not empty */
 		}
 		isns_assert(wp <= end);
 	}
 
-	return 1;
+	return 1;	/* empty */
 }
 
 int
