@@ -123,7 +123,7 @@ if [ ! -r $dsa_parms ]; then
 	EOF
 
 	mkdir -p `dirname $dsa_parms`
-	openssl dsaparam $dsa_bits -out $dsa_parms ||
+	openssl dsaparam -out $dsa_parms $dsa_bits ||
 		exit 1
 
 	# DSA parameters are public
@@ -147,11 +147,11 @@ cat <<EOF
 | Testing new DSA key
 ------------------------------------------------------------------
 EOF
-if ! openssl dgst -dss1 -sign $dsa_priv -out $tmpdir/test-sig /etc/hosts; then
+if ! openssl dgst -sha1 -sign $dsa_priv -out $tmpdir/test-sig /etc/hosts; then
 	echo "DSA signature failed - aborting!" >&2
 	exit 1
 fi
-if ! openssl dgst -dss1 -verify $dsa_pub -signature $tmpdir/test-sig /etc/hosts; then
+if ! openssl dgst -sha1 -verify $dsa_pub -signature $tmpdir/test-sig /etc/hosts; then
 	echo "DSA verification failed - aborting!" >&2
 	exit 1
 fi
