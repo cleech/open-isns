@@ -1042,21 +1042,19 @@ isns_portal_to_attr_list(const isns_portal_info_t *portal,
 	return 1;
 }
 
-char *
+static char portal_buf[1024];
+
+const char *
 isns_portal_string(const isns_portal_info_t *portal)
 {
 	const struct sockaddr_in6 *six = &portal->addr;
-	char		*bufp;
 	char		abuf[128];
 
 	inet_ntop(six->sin6_family, &six->sin6_addr, abuf, sizeof(abuf));
-	if (asprintf(&bufp, "[%s]:%d/%s",
+	snprintf(portal_buf, sizeof(portal_buf), "[%s]:%d/%s",
 			abuf, ntohs(six->sin6_port),
-			(portal->proto == IPPROTO_UDP)? "udp" : "tcp") < 0) {
-		isns_error("Error printing portal: %m\n");
-		return NULL;
-	}
-	return bufp;
+			(portal->proto == IPPROTO_UDP)? "udp" : "tcp");
+	return portal_buf;
 }
 
 int

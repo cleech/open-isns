@@ -654,7 +654,7 @@ extern int		isns_portal_to_object(const isns_portal_info_t *,
 				isns_object_t *);
 extern int		isns_portal_is_wildcard(const isns_portal_info_t *);
 extern uint32_t		isns_portal_tcpudp_port(const isns_portal_info_t *);
-extern char *		isns_portal_string(const isns_portal_info_t *);
+extern const char *	isns_portal_string(const isns_portal_info_t *);
 extern int		isns_portal_equal(const isns_portal_info_t *,
 				const isns_portal_info_t *);
 extern int		isns_enumerate_portals(isns_portal_info_t *,

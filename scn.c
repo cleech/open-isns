@@ -700,7 +700,6 @@ isns_scn_get_socket(isns_scn_t *scn)
 	isns_scn_funnel_t *f, *best = NULL;
 	isns_socket_t	*sock;
 	unsigned int	worst = 0, loops = 0, nfunnels;
-	char		*ps;
 
 	/* Keep it simple for now */
 	if ((f = scn->scn_current_funnel) != NULL && f->scn_socket) {
@@ -739,9 +738,9 @@ again:
 	isns_socket_set_security_ctx(sock,
 			isns_default_security_context(1));
 
-	ps = isns_portal_string(&best->scn_portal);
 	isns_debug_scn("SCN: %s using portal %s\n",
-			scn->scn_name, ps);
+			scn->scn_name,
+			isns_portal_string(&best->scn_portal));
 	scn->scn_current_funnel = best;
 	best->scn_socket = sock;
 	return sock;

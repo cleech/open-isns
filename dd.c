@@ -1286,7 +1286,7 @@ isns_dd_get_member_object(isns_db_t *db, const isns_attr_t *key1,
 			 &query))
 			return NULL;
 
-		key_string = isns_portal_string(&portal_info);
+		key_string = (char *)isns_portal_string(&portal_info);
 		tmpl = &isns_portal_template;
 		break;
 
@@ -1312,8 +1312,6 @@ isns_dd_get_member_object(isns_db_t *db, const isns_attr_t *key1,
 
 out:
 	isns_attr_list_destroy(&query);
-	if (key_string)
-		free(key_string);
 	return obj;
 
 }

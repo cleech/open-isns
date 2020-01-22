@@ -2370,7 +2370,6 @@ isns_socket_get_portal_info(const isns_socket_t *sock,
 	struct sockaddr_storage addr;
 	socklen_t	alen;
 	int		fd, success = 0;
-	char		*ps;
 
 	memset(portal, 0, sizeof(*portal));
 
@@ -2402,9 +2401,8 @@ isns_socket_get_portal_info(const isns_socket_t *sock,
 	else
 		portal->proto = IPPROTO_UDP;
 
-	ps = isns_portal_string(portal);
-	debug_verbose("socket_get_portal: %s\n", ps);
-	free(ps);
+	debug_verbose("socket_get_portal: %s\n",
+			isns_portal_string(portal));
 	success = 1;
 
 out:
