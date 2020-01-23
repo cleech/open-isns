@@ -56,8 +56,11 @@ sub isns_die {
 
 sub isns_finish {
 
+	my $pid_str;
 	my $pid;
-	foreach $pid (@__isns_servers) {
+    
+	foreach $pid_str (@__isns_servers) {
+		$pid = $pid_str + 0;
 		kill 15, $pid or &isns_warn("Cannot kill server process (pid=$pid): $!\n");
 	}
 
@@ -304,7 +307,7 @@ sub isns_start_server {
 				last if (-f $pidfile);
 				sleep 1;
 			}
-			$pid = `cat $pidfile` if ($pidfile);
+			$pid = `cat $pidfile`;
 			chop($pid);
 		}
 		&isns_info("*** Started server (pid=$pid) ***\n");
@@ -346,6 +349,9 @@ sub isns_restart_server {
 	$server_config = shift(@_);
 
 	&isns_stop_server($pid);
+	# give it some time to stop
+	&isns_idle(5);
+
 	return &isns_start_server($server_config);
 }
 
