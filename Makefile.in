@@ -172,6 +172,7 @@ $(SOLIB): $(SOLIBOBJS)
 	[ -L libisns.so ] || ln -s $(SOLIB) libisns.so
 else
 $(SOLIB):
+	touch $(SOLIB)
 endif
 
 isnsd: $(SRVOBJS) $(LIB) $(SOLIB)
