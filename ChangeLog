@@ -11,6 +11,17 @@ Lee Duncan (7):
       openssl: handle newer version with ifdefs
       General cleanup for the compiler.
       Fix problem with parsing IPv6 Addresses with brakcets.
+      Preparing for version v0.100
+      Added debugging, moved .cvsignore to .gitignore
+      fixed issues with old openssl usage
+      Adding python compiled files
+      Change isns_portal_string() to use static mem
+      Running make twice should not rebuild everything
+      Fix mdebug.c so it compiles when enabled.
+      Handle restarting test harness server correctly
+      Ignore SO lib
+      Create and use pythong unittest framework
+
 
 * Changes v0.98 to v0.99:
 
