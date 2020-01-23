@@ -6,3 +6,4 @@ isnsadm
 isnsd
 isnsdd
 libisns.a
+libisns*.so.?
