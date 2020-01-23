@@ -197,7 +197,9 @@ __isns_strdup(const char *s, const char *file, unsigned int line)
 }
 
 void
-__isns_free(void *ptr, const char *file, unsigned int line)
+__isns_free(void *ptr,
+	    __attribute__((unused))const char *file,
+	    __attribute__((unused))unsigned int line)
 {
 	struct m_header	*head;
 	size_t	true_size;
@@ -208,11 +210,11 @@ __isns_free(void *ptr, const char *file, unsigned int line)
 	head = ptr - sizeof(struct m_header);
 	__isns_check_chunk(head);
 
-	/*
+#if 0
 	printf("__isns_free(%u from %s:%u): freed by %s:%u\n",
 			head->h_size, head->h_file, head->h_line,
 			file, line);
-	   */
+#endif
 	true_size = head->h_size + CHUNK_OVERHEAD;
 	isns_list_del(&head->h_list);
 
@@ -257,7 +259,9 @@ isns_mdebug_init(void)
  * Default implementations of malloc and friends
  */
 static void *
-isns_malloc_default(size_t size, const char *file, unsigned int line)
+isns_malloc_default(size_t size,
+		    __attribute__((unused))const char *file,
+		    __attribute__((unused))unsigned int line)
 {
 	isns_mdebug_init();
 	return malloc(size);
@@ -265,7 +269,8 @@ isns_malloc_default(size_t size, const char *file, unsigned int line)
 
 static void *
 isns_calloc_default(unsigned int nele, size_t size,
-				const char *file, unsigned int line)
+		    __attribute__((unused))const char *file,
+		    __attribute__((unused))unsigned int line)
 {
 	isns_mdebug_init();
 	return calloc(nele, size);
@@ -273,21 +278,26 @@ isns_calloc_default(unsigned int nele, size_t size,
 
 static void *
 isns_realloc_default(void *old, size_t size,
-				const char *file, unsigned int line)
+		     __attribute__((unused))const char *file,
+		     __attribute__((unused))unsigned int line)
 {
 	isns_mdebug_init();
 	return realloc(old, size);
 }
 
 static char *
-isns_strdup_default(const char *s, const char *file, unsigned int line)
+isns_strdup_default(const char *s,
+		    __attribute__((unused))const char *file,
+		    __attribute__((unused))unsigned int line)
 {
 	isns_mdebug_init();
 	return strdup(s);
 }
 
 static void
-isns_free_default(void *ptr, const char *file, unsigned int line)
+isns_free_default(void *ptr,
+		  __attribute__((unused))const char *file,
+		  __attribute__((unused))unsigned int line)
 {
 	isns_mdebug_init();
 	return free(ptr);
