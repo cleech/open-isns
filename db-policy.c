@@ -52,11 +52,11 @@ __isns_db_keystore_lookup(isns_db_keystore_t *store,
 /*
  * Load a DSA key from the DB store
  */
+#ifdef WITH_SECURITY
 static EVP_PKEY *
 __isns_db_keystore_find(isns_keystore_t *store_base,
 		const char *name, size_t namelen)
 {
-#ifdef WITH_SECURITY
 	isns_db_keystore_t *store = (isns_db_keystore_t *) store_base;
 	isns_object_t	*obj;
 	const void	*key_data;
@@ -71,10 +71,16 @@ __isns_db_keystore_find(isns_keystore_t *store_base,
 		return NULL;
 
 	return isns_dsa_decode_public(key_data, key_size);
-#else
-	return NULL;
-#endif
 }
+#else	/* WITH_SECURITY */
+static EVP_PKEY *
+__isns_db_keystore_find(__attribute__((unused))isns_keystore_t *store_base,
+			__attribute__((unused))const char *name,
+			__attribute__((unused))size_t namelen)
+{
+	return NULL;
+}
+#endif	/* WITH_SECURITY */
 
 /*
  * Retrieve policy from database

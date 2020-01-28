@@ -322,8 +322,9 @@ failed:
 }
 #else /* WITH_SECURITY */
 static int
-isns_pdu_authenticate(isns_security_t *sec,
-		struct isns_partial_msg *msg, buf_t *bp)
+isns_pdu_authenticate(__attribute__((unused))isns_security_t *sec,
+		      __attribute__((unused))struct isns_partial_msg *msg,
+		      __attribute__((unused))buf_t *bp)
 {
 	return 0;
 }

@@ -122,22 +122,17 @@ isns_client_get_local_address(const isns_client_t *clnt,
 /*
  * Create a security context
  */
+#ifdef WITH_SECURITY
 static isns_security_t *
 __create_security_context(const char *name, const char *auth_key,
 		const char *server_key)
 {
-#ifdef WITH_SECURITY
 	isns_security_t 	*ctx;
 	isns_principal_t	*princ;
-#endif /* WITH_SECURITY */
 
 	if (!isns_config.ic_security)
 		return NULL;
 
-#ifndef WITH_SECURITY
-	isns_error("Cannot create security context: security disabled at build time\n");
-	return NULL;
-#else /* WITH_SECURITY */
 	ctx = isns_create_dsa_context();
 	if (ctx == NULL)
 		isns_fatal("Unable to create security context\n");
@@ -174,8 +169,19 @@ __create_security_context(const char *name, const char *auth_key,
 	}
 
 	return ctx;
-#endif /* WITH_SECURITY */
 }
+#else	/* WITH_SECURITY */
+static isns_security_t *
+__create_security_context(__attribute__((unused))const char *name,
+			  __attribute__((unused))const char *auth_key,
+			  __attribute__((unused))const char *server_key)
+{
+	if (!isns_config.ic_security)
+		return NULL;
+	isns_error("Cannot create security context: security disabled at build time\n");
+	return NULL;
+}
+#endif	/* WITH_SECURITY */
 
 /*
  * Create the default security context

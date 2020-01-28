@@ -14,6 +14,7 @@
 #include <string.h>	// for strdup
 #include <signal.h>
 #include <libisns/types.h>
+#include <stdlib.h>
 
 #define array_num_elements(a) (sizeof(a) / sizeof((a)[0]))
 

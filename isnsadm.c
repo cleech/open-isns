@@ -1162,7 +1162,7 @@ generate_key_callback(void)
 }
 
 isns_attr_t *
-load_key_callback(const char *pathname)
+load_key_callback(__attribute__((unused))const char *pathname)
 {
 	isns_fatal("Authentication disabled in this build\n");
 	return NULL;

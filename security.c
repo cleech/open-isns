@@ -408,32 +408,34 @@ isns_security_init(void)
 }
 
 isns_keystore_t *
-isns_create_keystore(const char *spec)
+isns_create_keystore(__attribute__((unused))const char *spec)
 {
 	isns_no_security();
 	return NULL;
 }
 
 void
-isns_security_set_keystore(isns_security_t *ctx,
-			isns_keystore_t *ks)
+isns_security_set_keystore(__attribute__((unused))isns_security_t *ctx,
+			   __attribute__((unused))isns_keystore_t *ks)
 {
 	isns_no_security();
 }
 
 void
-isns_principal_free(isns_principal_t *peer)
+isns_principal_free(__attribute__((unused))isns_principal_t *peer)
 {
 }
 
 isns_principal_t *
-isns_get_principal(isns_security_t *ctx, const char *spi, size_t spi_len)
+isns_get_principal(__attribute__((unused))isns_security_t *ctx,
+		   __attribute__((unused))const char *spi,
+		   __attribute__((unused))size_t spi_len)
 {
 	return NULL;
 }
 
 const char *
-isns_principal_name(const isns_principal_t *princ)
+isns_principal_name(__attribute__((unused))const isns_principal_t *princ)
 {
 	return NULL;
 }
