@@ -9,12 +9,13 @@
 #include <unistd.h>
 #include <limits.h>
 #include "config.h"
+#include <fcntl.h>
+#include <assert.h>
 #ifdef	WITH_SECURITY
 #include <openssl/pem.h>
 #include <openssl/err.h>
 #include <openssl/evp.h>
 #endif
-#include <fcntl.h>
 #include <libisns/isns.h>
 #include "security.h"
 #include <libisns/util.h>
@@ -431,17 +432,43 @@ isns_dsa_load_params(const char *filename)
 	return dsa;
 }
 
+/*
+ * write one 'status' character to stdout
+ */
+static void
+write_status_byte(int ch)
+{
+	static int	stdout_fd = 1;	/* fileno(stdout) */
+	char		buf[2];
+	int		res;
+
+	/*
+	 * We don't actually care about the return value here, since
+	 * we are just dumping a status byte to stdout, but
+	 * some linux distrubutions set the warn_unused_result attribute
+	 * for the write() API, so we might as well use the return value
+	 * to make sure the write command isn't broken.
+	 */
+	assert(ch);
+	buf[0] = ch;
+	buf[1] = '\0';
+	res = write(stdout_fd, buf, 1);
+	assert(res == 1);
+}
+
 static int
 isns_dsa_param_gen_callback(int stage,
 		__attribute__((unused))int index,
 		__attribute__((unused))void *dummy)
 {
 	if (stage == 0)
-		write(1, "+", 1);
+		write_status_byte('+');
 	else if (stage == 1)
-		write(1, ".", 1);
+		write_status_byte('.');
 	else if (stage == 2)
-		write(1, "/", 1);
+		write_status_byte('/');
+
+	/* as a callback, we must return a value, so just return success */
 	return 0;
 }
 
@@ -478,7 +505,7 @@ isns_dsa_init_params(const char *filename)
 	dsa = DSA_generate_parameters(dsa_key_bits, NULL, 0,
 			NULL, NULL, isns_dsa_param_gen_callback, NULL);
 #endif
-	write(1, "\n", 1);
+	write_status_byte('\n');
 
 	if (dsa == NULL) {
 		isns_dsasig_report_errors("Error generating DSA parameters",
