@@ -17,7 +17,7 @@ AC_PATH_PROG(SH, sh)
 dnl C Compiler features
 AC_C_INLINE
 if test "$GCC" = "yes"; then
-        CFLAGS="-Wall -Werror -Wextra $CFLAGS"
+        CFLAGS="-Wall -Wextra $CFLAGS"
 	CPPFLAGS="$CPPFLAGS -D_GNU_SOURCE"
 fi
 

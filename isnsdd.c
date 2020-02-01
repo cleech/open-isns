@@ -401,7 +401,7 @@ check_portal_registration(__attribute__((unused))void *ptr)
 			continue;
 
 		last_modified = isns_object_last_modified(obj);
-		if (last_modified + 2 * interval > now) {
+		if ((time_t)(last_modified + 2 * interval) > now) {
 			good_portals++;
 			continue;
 		}
