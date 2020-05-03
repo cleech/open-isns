@@ -41,14 +41,22 @@ char *		print_size(unsigned long);
  */
 static inline void signals_hold(void)
 {
-	sighold(SIGTERM);
-	sighold(SIGINT);
+	sigset_t s;
+
+	sigemptyset(&s);
+	sigaddset(&s, SIGTERM);
+	sigaddset(&s, SIGINT);
+	sigprocmask(SIG_BLOCK, &s, 0);
 }
 
 static inline void signals_release(void)
 {
-	sigrelse(SIGTERM);
-	sigrelse(SIGINT);
+	sigset_t s;
+
+	sigemptyset(&s);
+	sigaddset(&s, SIGTERM);
+	sigaddset(&s, SIGINT);
+	sigprocmask(SIG_UNBLOCK, &s, 0);
 }
 
 /*
