@@ -7,6 +7,7 @@ isnsd:
  -	make PGs children of the iSCSI storage node they're associated
  	with?
  -	Implement missing functions
+ -	Add test for "isnsd --init", to make sure it works correctly.
 
 isnsadm:
  -	support iSNS server discovery through DNS SRV
