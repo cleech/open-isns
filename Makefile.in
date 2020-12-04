@@ -118,6 +118,7 @@ install:
 	$(INSTALL) -m 644 $(srcdir)/doc/isnsd.8 $(MANDIR)/man8
 	$(INSTALL) -m 644 $(srcdir)/doc/isnsdd.8 $(MANDIR)/man8
 	$(INSTALL) -m 644 $(srcdir)/doc/isnsadm.8 $(MANDIR)/man8
+	$(INSTALL) -m 644 $(srcdir)/doc/isnssetup.8 $(MANDIR)/man8
 	$(INSTALL) -m 644 $(srcdir)/doc/isns_config.5 $(MANDIR)/man5
 	$(INSTALL) -m 644 $(srcdir)/isnsd.service $(SYSTEMDDIR)
 	$(INSTALL) -m 644 $(srcdir)/isnsd.socket $(SYSTEMDDIR)

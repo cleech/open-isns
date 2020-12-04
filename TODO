@@ -27,6 +27,10 @@ isnsdd:
  	we registered for ESI are seeing the server's
 	ESI messages.
 
+isnssetup:
+-	Update to support systemd, and perhaps have
+	a few options?
+
 DevAttrReg:
  -	Refuse registration of nodes inside the CONTROL
  	entity, unless it's a control node.

@@ -1,0 +1,64 @@
+'\" t
+.TH ISNSSETUP 8 "4 Dec 2020"
+.SH NAME
+isnssetup \- a simple script to bootstrap an iSNS server, including security
+.SH SYNOPSIS
+.B isnssetup
+.SH DESCRIPTION
+.B isnssetup
+is a command line utility for for bootstrapping your iSNS
+installation. It sets up the authentication credentials,
+sets up the
+.B ServerAddress
+to be
+.IR localhost ,
+and registers the appropriate values in the
+.B iSNS
+database. The
+.B isnssetup
+script does not take any options.
+.PP
+Running this script performs the following steps:
+.TP
+.B \(bu
+Set
+.B ServerAddress
+to
+.I localhost
+and
+.B Security
+to
+.I 1
+for
+.B isnsadmin.conf
+and
+.BR isnsdd.conf .
+.TP
+.B \(bu
+Initialize security files by running
+.BR "isnsd --init" ,
+copying the public key to the server key, then restarting
+the
+.B isnsd
+daemon, so that it sees the new authorization files.
+.TP
+.B \(bu
+Registering the control node policy, the control node itself, and
+lastly registering the server policy.
+.PP
+Note that this script is supplied as an example, although you should
+be able to use it directly if you wish. You have to be
+.B root
+to run this script successfully.
+.SH BUGS
+This script does not take
+.B systemd
+into account, so you may have to modify it to get it to work on
+a modern system.
+.SH SEE ALSO
+RFC 4171,
+.BR isnsadm (8),
+.BR isnsd (8),
+.BR isns_config (5).
+.SH AUTHORS
+Olaf Kirch <olaf.kirch@oracle.com>
