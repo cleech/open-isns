@@ -456,7 +456,7 @@ write_status_byte(int ch)
 	assert(res == 1);
 }
 
-static int
+static void
 isns_dsa_param_gen_callback(int stage,
 		__attribute__((unused))int index,
 		__attribute__((unused))void *dummy)
@@ -467,9 +467,6 @@ isns_dsa_param_gen_callback(int stage,
 		write_status_byte('.');
 	else if (stage == 2)
 		write_status_byte('/');
-
-	/* as a callback, we must return a value, so just return success */
-	return 0;
 }
 
 int
@@ -494,7 +491,7 @@ isns_dsa_init_params(const char *filename)
 	isns_notice("Generating DSA parameters; this may take a while\n");
 #if OPENSSL_VERSION_NUMBER >= 0x10002000L
 	cb = BN_GENCB_new();
-	BN_GENCB_set(cb, (int (*)(int, int, BN_GENCB *)) isns_dsa_param_gen_callback, NULL);
+	BN_GENCB_set_old(cb, (void (*)(int, int, void *)) isns_dsa_param_gen_callback, NULL);
 	dsa = DSA_new();
 	if (!DSA_generate_parameters_ex(dsa, dsa_key_bits, NULL, 0, NULL, NULL, cb)) {
 		DSA_free(dsa);
