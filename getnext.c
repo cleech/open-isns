@@ -244,7 +244,7 @@ isns_getnext_response_get_object(isns_simple_t *qry,
 {
 	isns_object_template_t *tmpl;
 
-	tmpl = isns_object_template_for_key_attrs(&qry->is_operating_attrs);
+	tmpl = isns_object_template_for_key_attrs(&qry->is_message_attrs);
 	if (tmpl == NULL) {
 		isns_error("Cannot determine object type in GetNext response\n");
 		return ISNS_ATTRIBUTE_NOT_IMPLEMENTED;
