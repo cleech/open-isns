@@ -1,3 +1,28 @@
+* Changes v0.100 to v0.101:
+
+Dmitry Bogdanov (1):
+      Fix parsing of GetNextRsp
+
+Lee Duncan (10):
+      Ignore common build files
+      Fix compiler issue when not in security mode
+      Do not ignore write() return value.
+      Fix 586 compile issue and remove -Werror
+      Added a TODO: 'make depend' not worrking
+      Update version string to "0.100".
+      Fix broken server authentication initialization.
+      Add man page for isnssetup.
+      Added TODO to test "isnsd --init"
+      Preparing for version 0.101
+
+Leo (1):
+      socket.c: include poll.h instead of sys/poll.h for POSIX compatibility
+
+Rosen Penev (2):
+      fix compilation without deprecated OpenSSL APIs
+      libisns: remove sighold and sigrelse
+
+
 * Changes v0.99 to v0.100:
 
 Chris Leech (1):
