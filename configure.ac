@@ -1,4 +1,4 @@
-AC_INIT(open-isns, [0.100])
+AC_INIT(open-isns, [0.101])
 AC_CONFIG_SRCDIR([isnsd.c])
 AC_CONFIG_AUX_DIR([aclocal])
 
