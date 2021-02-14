@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 # 
 # This is a very simple script to generate a DSA
 # key pair for authenticated iSNS.
@@ -25,7 +25,7 @@ dsa_bits=1024
 opt_force=0
 opt_server=0
 
-function usage {
+usage() {
 	cat <<-EOF >&2
 	$*
 	Usage:
@@ -35,7 +35,7 @@ function usage {
 	exit 1
 }
 
-function make_isns_name {
+make_isns_name() {
 	OFS="$IFS"
 	IFS=.
 	set -- $*
