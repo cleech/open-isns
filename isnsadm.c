@@ -97,7 +97,7 @@ main(int argc, char **argv)
 	isns_security_t	*security = NULL;
 	int		c, status;
 
-	while ((c = getopt_long(argc, argv, "46Cc:d:hK:k:ls:", options, NULL)) != -1) {
+	while ((c = getopt_long(argc, argv, "46Cc:d:hK:k:ls:Vr", options, NULL)) != -1) {
 		switch (c) {
 		case '4':
 			opt_af = AF_INET;
