@@ -29,7 +29,8 @@ enum {
 };
 
 static const char *	opt_configfile = ISNS_DEFAULT_ISNSD_CONFIG;
-static int		opt_af = AF_UNSPEC;
+static int		opt_af = AF_INET6; // should be AF_INET6 as described in isnsd's manual
+
 static int		opt_mode = MODE_NORMAL;
 static int		opt_foreground = 0;
 
