@@ -1,0 +1,8 @@
+includedir=/usr/include
+libdir=/usr/lib64
+
+Name: libisns
+Version: 0.101
+Description: iSNS user space library
+Libs: -L${libdir} -lisns
+Cflags: -I${includedir}
