@@ -6,7 +6,7 @@ isnsadm
 isnsd
 isnsdd
 libisns.a
-libisns*.so.?
+libisns*.so*
 Makefile
 config.h
 config.log
