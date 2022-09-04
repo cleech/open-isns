@@ -11,20 +11,23 @@ project('libisns', 'c',
     'prefix=/usr']
   )
 
-with_security = get_option('security')
-with_slp = get_option('slp')
-enable_shared = get_option('enable_shared')
-enable_shared_version = get_option('enable_shared_version')
-disable_static = get_option('disable_static')
+# get feature options
+with_security = get_option('security').enabled()
+with_slp = get_option('slp').enabled()
+enable_shared = get_option('shared').enabled()
+enable_shared_version = get_option('shared_version').enabled()
+enable_static = get_option('static').enabled()
+
+if not enable_shared and not enable_static
+  error('You must enable either shared or static libary building')
+endif
+
+# get directory name override options
 man_dir = get_option('mandir')
 etc_dir = get_option('sysconfdir')
 systemd_unit_dir = get_option('systemddir') / 'system'
 sbin_dir = get_option('sbindir')
 run_dir = get_option('rundir')
-
-if not enable_shared and disable_static
-  error('You must enable either shared or static libary building')
-endif
 
 subdir('tests')
 subdir('doc')
@@ -120,7 +123,7 @@ if with_slp
   lib_deps += cc.find_library('slp')
 endif
 
-if not disable_static
+if enable_static
   libisns_lib = static_library('isns',
     lib_srcs,
     include_directories: incl_dirs,

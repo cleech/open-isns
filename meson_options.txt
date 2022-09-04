@@ -1,9 +1,15 @@
 # meson options for open-isns
 
-option('security', type: 'boolean', value: true)
-option('slp', type: 'boolean', value: true)
-option('enable_shared', type: 'boolean', value: false)
-option('enable_shared_version', type: 'boolean', value: true)
-option('disable_static', type: 'boolean', value: false)
+# enabled security and service location protocol usage by default
+option('security', type: 'feature', value: 'enabled')
+option('slp', type: 'feature', value: 'enabled')
+
+# disable shared library creation and enable static library
+# creation, by default
+option('shared', type: 'feature', value: 'disabled')
+option('shared_version', type: 'feature', value: 'enabled')
+option('static', type: 'feature', value: 'enabled')
+
+# set default locations for systemd and runtime files
 option('systemddir', type: 'string', value: '/usr/lib/systemd')
 option('rundir', type: 'string', value: '/var/run')

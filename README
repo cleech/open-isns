@@ -103,21 +103,20 @@ meson.
       meson setup --help
 
    The project-specific options are set using -D<OPTION>=VALUE. OPTIONS
-   are from:
+   are from. You can use 'meson configure' to see these project options:
 
-      security      boolean [true]             use libcrypt for security
-      slp           boolean [true]             use Service Location Protocol
-      build_shared  boolean [false]            build a shared library in
-                                               addition to the static one
-      use_shared_version
-                    boolean [true]             use library versioning, if
-                                               building a shared library
-      systemddir    string [/usr/lib/systemd]  location of systemd files
-      rundir        string [/var/run]          where socket and pidfile go
+      security        feature [enabled]         use libcrypt for security
+      slp             feature [enabled]         use Service Location Protocol
+      shared          feature [disabled]        build a shared library
+      shared_version  feature [disabled]        use library versioning, if
+                                                building a shared library
+      static          feature [enabled]         build a static library
+      systemddir      string [/usr/lib/systemd] location of systemd files
+      rundir          string [/var/run]         where socket and pidfile go
 
    e.g. one might run:
 
-      meson setup -Dsecurity=false -Dbuild_shared=true -Drundir=/some/dir
+      meson setup -Dsecurity=disabled -Dshared=enabled -Drundir=/some/dir
 
    Once meson has created and set up your "builddir" directory, you can
    actually build the code using ninja:
