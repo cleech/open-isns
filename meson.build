@@ -1,10 +1,5 @@
 # meson build for open-isns
 
-#
-# TODO:
-#   - add option to enable the shared object
-#   - add option to set rundir (default /var/run) ???
-
 project('libisns', 'c',
   version: '0.101',
   license: 'LGPL-2.1-or-later',
@@ -18,12 +13,18 @@ project('libisns', 'c',
 
 with_security = get_option('security')
 with_slp = get_option('slp')
-build_shared = get_option('build_shared')
+enable_shared = get_option('enable_shared')
+enable_shared_version = get_option('enable_shared_version')
+disable_static = get_option('disable_static')
 man_dir = get_option('mandir')
 etc_dir = get_option('sysconfdir')
 systemd_unit_dir = get_option('systemddir') / 'system'
 sbin_dir = get_option('sbindir')
 run_dir = get_option('rundir')
+
+if not enable_shared and disable_static
+  error('You must enable either shared or static libary building')
+endif
 
 subdir('tests')
 subdir('doc')
@@ -86,6 +87,9 @@ add_project_arguments(
   ['-D_GNU_SOURCE'],
   language: 'c')
 
+# we will need this below
+cc = meson.get_compiler('c')
+
 #
 # build our config.h file
 #
@@ -107,26 +111,34 @@ config_dep = declare_dependency(
   sources: config_h)
 
 #
-# build our library
+# build our library -- we always build either the static or
+# the shared library, or both
 #
 
 lib_deps = [config_dep, security_dep]
 if with_slp
-  cc = meson.get_compiler('c')
   lib_deps += cc.find_library('slp')
 endif
 
-libisns_lib = static_library('isns',
-  lib_srcs,
-  include_directories: incl_dirs,
-  dependencies: lib_deps,
-  install: true)
+if not disable_static
+  libisns_lib = static_library('isns',
+    lib_srcs,
+    include_directories: incl_dirs,
+    dependencies: lib_deps,
+    install: true)
+endif
 
-if build_shared
+if enable_shared
+  if enable_shared_version
+    shared_link_args = '-Wl,--version-script=@0@/libisns.vers'.format(meson.current_source_dir())
+  else
+    shared_link_args = ''
+  endif
   libisns_lib = shared_library('isns',
     lib_srcs,
     include_directories: incl_dirs,
     dependencies: lib_deps,
+    link_args: shared_link_args,
     version: '0',
     install: true)
 endif
@@ -139,7 +151,6 @@ libisns_dep = declare_dependency(link_with: libisns_lib)
 
 our_dependencies = [config_dep, security_dep, libisns_dep]
 if with_slp
-  cc = meson.get_compiler('c')
   our_dependencies += cc.find_library('slp')
 endif
 
@@ -164,6 +175,7 @@ executable('isnsadm',
   install: true,
   install_dir: sbin_dir)
 
+# a testing program (not installed, not currently used here)
 e = executable('bitvector',
   sources: files('bitvector.c'),
   include_directories: incl_dirs,

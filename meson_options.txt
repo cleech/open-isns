@@ -2,6 +2,8 @@
 
 option('security', type: 'boolean', value: true)
 option('slp', type: 'boolean', value: true)
-option('build_shared', type: 'boolean', value: false)
+option('enable_shared', type: 'boolean', value: false)
+option('enable_shared_version', type: 'boolean', value: true)
+option('disable_static', type: 'boolean', value: false)
 option('systemddir', type: 'string', value: '/usr/lib/systemd')
 option('rundir', type: 'string', value: '/var/run')
