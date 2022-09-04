@@ -1,0 +1,7 @@
+# meson options for open-isns
+
+option('security', type: 'boolean', value: true)
+option('slp', type: 'boolean', value: true)
+option('build_shared', type: 'boolean', value: false)
+option('systemddir', type: 'string', value: '/usr/lib/systemd')
+option('rundir', type: 'string', value: '/var/run')
