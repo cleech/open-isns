@@ -135,7 +135,7 @@ if enable_shared
   if enable_shared_version
     shared_link_args = '-Wl,--version-script=@0@/libisns.vers'.format(meson.current_source_dir())
   else
-    shared_link_args = ''
+    shared_link_args = []
   endif
   libisns_lib = shared_library('isns',
     lib_srcs,
