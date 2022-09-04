@@ -166,3 +166,6 @@ AC_SUBST(ENABLE_STATIC)
 AC_SUBST(RUNDIR)
 
 AC_OUTPUT(Makefile include/libisns/paths.h)
+
+dnl Warn user that autoconf is deprecated here
+AC_MSG_WARN([Autotool/configure/make are deprecated, and will be removed soon. Please using "meson" instead])
